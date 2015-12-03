@@ -55,7 +55,7 @@ def _swig_repr(self):
 import types
 
 try:
-    _object = types.ObjectType
+    _object = object
     _newclass = 1
 except AttributeError:
     class _object:

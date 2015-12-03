@@ -279,7 +279,7 @@ class Timestep(object):
 
     def __iter__(self):
         def iterTS():
-            for i in xrange(self.numatoms):
+            for i in range(self.numatoms):
                 yield self[i]
 
         return iterTS()
@@ -616,14 +616,14 @@ class Reader(IObase):
     def __len__(self):
         return self.numframes
 
-    def next(self):
+    def __next__(self):
         """Forward one step to next frame."""
         return self._read_next_timestep()
 
     def rewind(self):
         """Position at beginning of trajectory"""
         self._reopen()
-        self.next()
+        next(self)
 
     @property
     def dt(self):
@@ -755,7 +755,7 @@ class Reader(IObase):
         # be much slower than skipping steps in a next() loop
         def _iter(start=start, stop=stop, step=step):
             try:
-                for i in xrange(start, stop, step):
+                for i in range(start, stop, step):
                     yield self._read_frame(i)
             except TypeError:  # if _read_frame not implemented
                 raise TypeError("{0} does not support slicing."
@@ -1054,14 +1054,14 @@ class ChainReader(Reader):
             yield ts
 
     def _read_next_timestep(self, ts=None):
-        self.ts = self.__chained_trajectories_iter.next()
+        self.ts = next(self.__chained_trajectories_iter)
         return self.ts
 
     def rewind(self):
         """Set current frame to the beginning."""
         self._rewind()
         self.__chained_trajectories_iter = self._chained_iterator()
-        self.ts = self.__chained_trajectories_iter.next()  # set time step to frame 1
+        self.ts = next(self.__chained_trajectories_iter)  # set time step to frame 1
 
     def _rewind(self):
         """Internal method: Rewind trajectories themselves and trj pointer."""
@@ -1192,7 +1192,7 @@ class SingleFrameReader(Reader):
     def _reopen(self):
         pass
 
-    def next(self):
+    def __next__(self):
         raise IOError(self._err.format(self.__class__.__name__))
 
     def __iter__(self):

@@ -32,10 +32,10 @@ if __name__ == '__main__':
 
     rms_fit_trj(trj, ref, filename="output/rmsfit.dcd", select="not name H*",
                 mass_weighted=True, rmsdfile="output/rmsfit_rmsd.dat")
-    print "Fitted trajectory: output/rmsfit.dcd"
+    print("Fitted trajectory: output/rmsfit.dcd")
 
     rmsd = numpy.loadtxt("output/rmsfit_rmsd.dat")
-    print "RMSD: output/rmsfit_rmsd.dat"
+    print("RMSD: output/rmsfit_rmsd.dat")
 
     if have_matplotlib:
         plot(rmsd, 'k-', linewidth=2)
@@ -43,6 +43,6 @@ if __name__ == '__main__':
         ylabel(r"mass weighted heavy atom RMSD ($\AA$)")
         savefig("figures/rmsdfit_rmsd.pdf")
         savefig("figures/rmsdfit_rmsd.png")
-        print "RMSD graph: figures/rmsdfit_rmsd.{pdf,png}"
+        print("RMSD graph: figures/rmsdfit_rmsd.{pdf,png}")
 
 

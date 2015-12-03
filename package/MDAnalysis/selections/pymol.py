@@ -34,7 +34,7 @@ The selections should appear in the user interface.
    :inherited-members:
 """
 
-import base
+from . import base
 
 
 class SelectionWriter(base.SelectionWriter):

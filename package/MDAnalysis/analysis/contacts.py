@@ -144,7 +144,7 @@ import os
 import errno
 import warnings
 import bz2
-from itertools import izip
+
 import numpy
 import MDAnalysis
 import MDAnalysis.core.distances
@@ -385,7 +385,7 @@ class ContactAnalysis(object):
             for line in data:
                 if line.startswith('#'):
                     continue
-                records.append(map(float, line.split()))
+                records.append(list(map(float, line.split())))
         self.timeseries = numpy.array(records).T
 
     def plot(self, **kwargs):
@@ -547,7 +547,7 @@ class ContactAnalysis1(object):
         for x in self.references:
             if x is None:
                 raise ValueError("a reference AtomGroup must be supplied")
-        for ref, sel, s in izip(self.references, self.selections, self.selection_strings):
+        for ref, sel, s in zip(self.references, self.selections, self.selection_strings):
             if ref.atoms.numberOfAtoms() != sel.atoms.numberOfAtoms():
                 raise ValueError("selection=%r: Number of atoms differ between "
                                  "reference (%d) and trajectory (%d)" %
@@ -631,7 +631,7 @@ class ContactAnalysis1(object):
                 out.write("%(frame)4d  %(q1)8.6f %(n1)5d\n" % vars())
         if store:
             self.timeseries = numpy.array(records).T
-        numframes = len(range(total_frames)[start_frame:end_frame:step_value])
+        numframes = len(list(range(total_frames))[start_frame:end_frame:step_value])
         self.qavg /= numframes
         numpy.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
@@ -682,7 +682,7 @@ class ContactAnalysis1(object):
             for line in data:
                 if line.startswith('#'):
                     continue
-                records.append(map(float, line.split()))
+                records.append(list(map(float, line.split())))
         self.timeseries = numpy.array(records).T
         try:
             self.qavg = numpy.loadtxt(self.outarray)

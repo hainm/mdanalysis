@@ -89,7 +89,7 @@ def analyze(partners={}, clusters={}, multimers=[{}, {}, {}, {}], skip=1000):
     for ts in universe.trajectory:
         if not ts.frame % skip == 0 and ts.frame != 1:
             continue
-        print "Stepping... Frame %d, time %d ns" % (ts.frame, ts.time / 1000)
+        print("Stepping... Frame %d, time %d ns" % (ts.frame, ts.time / 1000))
 
         p = find_partners(peptide_selection, peptide_dictionary)
         partners[ts.frame] = p
@@ -124,7 +124,7 @@ def find_partners(peptide_list, lookup):
     e.g. {0: [(3, 5)], 3: [(0,5)], 5: [(3,0)]}
     """
     ret = {}
-    for id, selection in peptide_list.items():
+    for id, selection in list(peptide_list.items()):
         atom_list = universe.selectAtoms("around %d (%s) and not resname W" % (cutoff, selection))
         ret[id] = set()
         for atom in atom_list:
@@ -164,7 +164,7 @@ def find_clusters(partners_dictionary):
     # history of assigned peptides
     history = set()
 
-    for id1, partner_list in partners_dictionary.items():
+    for id1, partner_list in list(partners_dictionary.items()):
         history.add(id1)
         if len(partner_list) == 0:
             continue

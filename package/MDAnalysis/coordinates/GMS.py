@@ -229,7 +229,7 @@ class GMSReader(base.Reader):
         """reposition on first frame"""
         self._reopen()
         # the next method is inherited from the Reader Class and calls _read_next_timestep
-        self.next()
+        next(self)
 
     def _reopen(self):
         self.close()

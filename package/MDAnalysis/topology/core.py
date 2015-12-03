@@ -25,12 +25,12 @@ module. They are mostly of use to developers.
 
 """
 
-from __future__ import print_function
+
 # Global imports
 import os.path
 import numpy
 from collections import defaultdict
-from itertools import izip
+
 
 # Local imports
 from . import tables
@@ -68,7 +68,7 @@ def build_segments(atoms):
             # We've come to a new segment
             # Build the Segment we just left
             residues = [AtomGroup.Residue(ats[0].resname, k, ats)
-                        for k, ats in resatomlist.iteritems()]
+                        for k, ats in resatomlist.items()]
             struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
 
             # Reset things and start again
@@ -78,7 +78,7 @@ def build_segments(atoms):
 
     # Add the last segment
     residues = [AtomGroup.Residue(ats[0].resname, k, ats)
-                for k, ats in resatomlist.iteritems()]
+                for k, ats in resatomlist.items()]
     struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
     return struc
 
@@ -102,7 +102,7 @@ def build_residues(atoms):
         resatomlist[a.resid].append(a)
 
     residues = [AtomGroup.Residue(ats[0].resname, k, ats)
-                for k, ats in resatomlist.iteritems()]
+                for k, ats in resatomlist.items()]
 
     return residues
 
@@ -398,7 +398,7 @@ def guess_format(filename, format=None):
                 "           {1}\n"
                 "           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
                 "           For missing formats, raise an issue at "
-                "http://issues.mdanalysis.org".format(filename, _topology_parsers.keys()))
+                "http://issues.mdanalysis.org".format(filename, list(_topology_parsers.keys())))
                 #TypeError: ...."
     else:
         # internally, formats are all uppercase
@@ -414,7 +414,7 @@ def guess_format(filename, format=None):
             "           You can use 'Universe(topology, ..., topology_format=FORMAT)' to explicitly\n"
             "           specify the format and override automatic detection.\n"
             "           For missing formats, raise an issue at "
-            "http://issues.mdanalysis.org".format(format, filename, _topology_parsers.keys()))
+            "http://issues.mdanalysis.org".format(format, filename, list(_topology_parsers.keys())))
             #TypeError: ...."
     return format
 
@@ -791,11 +791,11 @@ class TopologyDict(object):
 
     def __len__(self):
         """Returns the number of types of bond in the topology dictionary"""
-        return len(self.dict.keys())
+        return len(list(self.dict.keys()))
 
     def keys(self):
         """Returns a list of the different types of available bonds"""
-        return self.dict.keys()
+        return list(self.dict.keys())
 
     def __iter__(self):
         """Iterator over keys in this dictionary"""
@@ -940,7 +940,7 @@ class TopologyGroup(object):
 
         .. versionadded 0.9.0
         """
-        return self.topDict.keys()
+        return list(self.topDict.keys())
 
     @property
     @cached('dict')
@@ -1194,7 +1194,7 @@ class TopologyGroup(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __nonzero__(self):
+    def __bool__(self):
         if len(self) == 0:
             return False
         else:
@@ -1253,7 +1253,7 @@ class TopologyGroup(object):
         vec1 = self.atom1.coordinates() - self.atom2.coordinates()
         vec2 = self.atom3.coordinates() - self.atom2.coordinates()
 
-        angles = numpy.array([slowang(a, b) for a, b in izip(vec1, vec2)])
+        angles = numpy.array([slowang(a, b) for a, b in zip(vec1, vec2)])
         return angles
 
     def angles(self, result=None, pbc=False):
@@ -1301,7 +1301,7 @@ class TopologyGroup(object):
         vec3 = self.atom4.coordinates() - self.atom3.coordinates()
 
         return numpy.array([dihedral(a, b, c)
-                            for a, b, c in izip(vec1, vec2, vec3)])
+                            for a, b, c in zip(vec1, vec2, vec3)])
 
     def torsions(self, result=None, pbc=False):
         """Calculate the torsional angle in radians for this topology

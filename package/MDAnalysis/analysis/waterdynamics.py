@@ -464,8 +464,8 @@ class HydrogenBondLifetimes(object):
                 h.run(quiet=quiet)
                 break
             except:
-                print "error"
-                print "trying again"
+                print("error")
+                print("trying again")
                 sys.stdout.flush()
         sys.stdout.flush()
         conn.send(h.timeseries[0])
@@ -484,7 +484,7 @@ class HydrogenBondLifetimes(object):
                     k=i
                     for j in range(self.nproc):
                         #start
-                        print "ts=",i+1
+                        print("ts=",i+1)
                         if i >= len(self.universe.trajectory):
                             break
                         conn_parent, conn_child  = multiprocessing.Pipe(False)
@@ -499,7 +499,7 @@ class HydrogenBondLifetimes(object):
                                      conn_parent))
                                 break
                             except:
-                                print "error in jobs.append"
+                                print("error in jobs.append")
                         jobs[j][0].start()
                         i = i + 1
 
@@ -666,7 +666,7 @@ class WaterOrientationalRelaxation(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.selectAtoms(selection_str))
-            print ts.frame
+            print(ts.frame)
         return selection
 
     # Second Legendre polynomial
@@ -791,7 +791,7 @@ class AngularDistribution(object):
         to a column format.
         """
         a = []
-        for x in itertools.izip_longest(*aList, fillvalue="."):
+        for x in itertools.zip_longest(*aList, fillvalue="."):
             a.append(" ".join(str(i) for i in x))
         return a
 
@@ -823,7 +823,7 @@ class AngularDistribution(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.selectAtoms(selection_str))
-            print ts.frame
+            print(ts.frame)
         return selection
 
 
@@ -921,7 +921,7 @@ class  MeanSquareDisplacement(object):
 
         for j in range(totalFrames/dt-1):
             a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
-            print "a=",a
+            print("a=",a)
             sumDeltaO += a
             valOList.append(a)
             sumsdt +=  dt
@@ -944,7 +944,7 @@ class  MeanSquareDisplacement(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.selectAtoms(selection_str))
-            print ts.frame
+            print(ts.frame)
         return selection
 
     def run(self,**kwargs):
@@ -1049,7 +1049,7 @@ class SurvivalProbability(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.selectAtoms(selection_str))
-            print ts.frame
+            print(ts.frame)
         return selection
 
     def run(self,**kwargs):

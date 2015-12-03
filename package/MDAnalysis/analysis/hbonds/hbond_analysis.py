@@ -536,7 +536,7 @@ class HydrogenBondAnalysis(object):
         }
         if not detect_hydrogens in self._get_bonded_hydrogens_algorithms:
             raise ValueError("detect_hydrogens must be one of %r" %
-                             self._get_bonded_hydrogens_algorithms.keys())
+                             list(self._get_bonded_hydrogens_algorithms.keys()))
         self.detect_hydrogens = detect_hydrogens
 
         self.u = universe
@@ -866,7 +866,7 @@ class HydrogenBondAnalysis(object):
             if self.selection1_type in ('donor', 'both') and len(self._s2_acceptors) > 0:
                 self.logger_debug("Selection 1 Donors <-> Acceptors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s2_acceptors)
-                for i, donor_h_set in self._s1_donors_h.items():
+                for i, donor_h_set in list(self._s1_donors_h.items()):
                     d = self._s1_donors[i]
                     for h in donor_h_set:
                         res = ns_acceptors.search_list(AtomGroup([h]), self.distance)
@@ -885,7 +885,7 @@ class HydrogenBondAnalysis(object):
             if self.selection1_type in ('acceptor', 'both') and len(self._s1_acceptors) > 0:
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s1_acceptors)
-                for i, donor_h_set in self._s2_donors_h.items():
+                for i, donor_h_set in list(self._s2_donors_h.items()):
                     d = self._s2_donors[i]
                     for h in donor_h_set:
                         res = ns_acceptors.search_list(AtomGroup([h]), self.distance)
@@ -960,7 +960,7 @@ class HydrogenBondAnalysis(object):
         # and speedups of ~x10 can be achieved by filling a standard array, like this:
         out = numpy.empty((num_records,), dtype=dtype)
         cursor = 0  # current row
-        for t, hframe in itertools.izip(self.timesteps, self.timeseries):
+        for t, hframe in zip(self.timesteps, self.timeseries):
             for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
                 out[cursor] = (t, donor_idx, acceptor_idx) + parse_residue(donor) + \
                     parse_residue(acceptor) + (distance, angle)
@@ -979,11 +979,11 @@ class HydrogenBondAnalysis(object):
 
         .. SeeAlso:: :mod:`cPickle` module and :class:`numpy.recarray`
         """
-        import cPickle
+        import pickle
 
         if self.table is None:
             self.generate_table()
-        cPickle.dump(self.table, open(filename, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.table, open(filename, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
     def count_by_time(self):
         """Counts the number of hydrogen bonds per timestep.
@@ -998,8 +998,8 @@ class HydrogenBondAnalysis(object):
             return
 
         out = numpy.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
-        for cursor, time_count in enumerate(itertools.izip(self.timesteps,
-                                                           itertools.imap(len, self.timeseries))):
+        for cursor, time_count in enumerate(zip(self.timesteps,
+                                                           map(len, self.timeseries))):
             out[cursor] = time_count
         return out.view(numpy.recarray)
 
@@ -1045,7 +1045,7 @@ class HydrogenBondAnalysis(object):
 
         # float because of division later
         tsteps = float(len(self.timesteps))
-        for cursor, (key, count) in enumerate(hbonds.iteritems()):
+        for cursor, (key, count) in enumerate(hbonds.items()):
             out[cursor] = key + (count / tsteps,)
 
         # return array as recarray
@@ -1078,7 +1078,7 @@ class HydrogenBondAnalysis(object):
             return
 
         hbonds = defaultdict(list)
-        for (t, hframe) in itertools.izip(self.timesteps, self.timeseries):
+        for (t, hframe) in zip(self.timesteps, self.timeseries):
             for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
                 donor_resnm, donor_resid, donor_atom = parse_residue(donor)
                 acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
@@ -1092,7 +1092,7 @@ class HydrogenBondAnalysis(object):
 
         out_nrows = 0
         # count number of timesteps per key to get length of output table
-        for ts_list in hbonds.itervalues():
+        for ts_list in hbonds.values():
             out_nrows += len(ts_list)
 
         # build empty output table
@@ -1104,7 +1104,7 @@ class HydrogenBondAnalysis(object):
         out = numpy.empty((out_nrows,), dtype=dtype)
 
         out_row = 0
-        for (key, times) in hbonds.iteritems():
+        for (key, times) in hbonds.items():
             for tstep in times:
                 out[out_row] = key + (tstep,)
                 out_row += 1
@@ -1144,8 +1144,8 @@ class HydrogenBondAnalysis(object):
 
         def _make_dict(donors, hydrogens):
             # two steps so that entry for one residue can be UPDATED for multiple donors
-            d = dict((donors[k].resid, {}) for k in xrange(len(donors)) if k in hydrogens)
-            for k in xrange(len(donors)):
+            d = dict((donors[k].resid, {}) for k in range(len(donors)) if k in hydrogens)
+            for k in range(len(donors)):
                 if k in hydrogens:
                     d[donors[k].resid].update(dict((atom.name, donors[k].name) for atom in hydrogens[k]))
             return d
@@ -1153,7 +1153,7 @@ class HydrogenBondAnalysis(object):
         h2donor = _make_dict(s2d, s2h)  # 2 is typically the larger group
         # merge (in principle h2donor.update(_make_dict(s1d, s1h) should be sufficient
         # with our assumptions but the following should be really safe)
-        for resid, names in _make_dict(s1d, s1h).items():
+        for resid, names in list(_make_dict(s1d, s1h).items()):
             if resid in h2donor:
                 h2donor[resid].update(names)
             else:
@@ -1191,7 +1191,7 @@ class HydrogenBondAnalysis(object):
             #return dict(flatten_1([(atom.id, donors[k].name) for atom in hydrogens[k]] for k in xrange(len(donors))
             # if k in hydrogens))
             x = []
-            for k in xrange(len(donors)):
+            for k in range(len(donors)):
                 if k in hydrogens:
                     x.extend([(atom.number, donors[k].name) for atom in hydrogens[k]])
             return dict(x)

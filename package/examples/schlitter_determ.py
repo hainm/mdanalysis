@@ -41,8 +41,8 @@ ca_cov = Numeric.zeros((num_coor, num_coor), Numeric.Float)
 for ts in ca2:
     ca_cov += Numeric.outerproduct(ts, ts)
 ca_cov /= num_ts
-print "ca_cov", shape(ca_cov)
-print "mass_matrix", shape(mass_matrix)
+print("ca_cov", shape(ca_cov))
+print("mass_matrix", shape(mass_matrix))
 
 #---------------------------------
 #  calculating the entropy
@@ -52,8 +52,8 @@ k = (1.380658e-23)  # J/K
 Avogadro = 6.0221367e23  # /mol
 T = 300  # Kelvin
 term = (k * T * exp(2) / pow(hplanck_bar, 2))
-print "term =", term
+print("term =", term)
 determ = linalg.det((term * Numeric.matrixmultiply(ca_cov, mass_matrix)) + identity(len(mass_matrix)))
-print "det = ", determ
+print("det = ", determ)
 S_ho = k / 2 * Avogadro * math.log(determ)
-print "S_ho=", S_ho
+print("S_ho=", S_ho)

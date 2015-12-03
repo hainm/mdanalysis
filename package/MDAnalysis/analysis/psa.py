@@ -167,7 +167,7 @@ import MDAnalysis
 import MDAnalysis.analysis.align
 from MDAnalysis import NoDataError
 
-import cPickle as pickle
+import pickle as pickle
 import os
 
 import logging
@@ -191,8 +191,8 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        print("Path metric {} not found. Valid selections: ".format(key))
-        for name in path_metrics.keys(): print("  \"{}\"".format(name))
+        print(("Path metric {} not found. Valid selections: ".format(key)))
+        for name in list(path_metrics.keys()): print(("  \"{}\"".format(name)))
 
 
 def hausdorff(P,Q, N=None):
@@ -642,7 +642,7 @@ class PSA(object):
                          'paths' : '/paths',
                          'distance_matrices' : '/distance_matrices',
                          'plots' : '/plots'}
-        for dir_name, directory in self.datadirs.iteritems():
+        for dir_name, directory in self.datadirs.items():
             try:
                 full_dir_name = os.path.join(self.targetdir, dir_name)
                 os.makedirs(full_dir_name)
@@ -786,8 +786,8 @@ class PSA(object):
         metric_func = get_path_metric_func(metric)
         npaths = len(self.paths)
         D = numpy.zeros((npaths,npaths))
-        for i in xrange(0, npaths-1):
-            for j in xrange(i+1, npaths):
+        for i in range(0, npaths-1):
+            for j in range(i+1, npaths):
                 P = self.paths[i][start:stop:step]
                 Q = self.paths[j][start:stop:step]
                 D[i,j] = D[j,i] = metric_func(P, Q)
@@ -859,7 +859,7 @@ class PSA(object):
         self.paths = [numpy.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):
             self.labels = numpy.load(self._labels_pkl)
-        print("Loaded paths from " + self._paths_pkl)
+        print(("Loaded paths from " + self._paths_pkl))
 
 
     def plot(self, filename=None, linkage='ward', count_sort=False,

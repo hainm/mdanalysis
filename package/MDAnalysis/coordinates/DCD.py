@@ -292,7 +292,7 @@ class DCDWriter(base.Writer):
             'file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
             'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr',
             'reverse', 'charmm', 'first', 'with_unitcell']
-        return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str)))
+        return dict(list(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str))))
 
     def write_next_timestep(self, ts=None):
         ''' write a new timestep to the dcd file
@@ -460,7 +460,7 @@ class DCDReader(base.Reader):
             'file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
             'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse',
             'charmm', 'first', 'with_unitcell']
-        return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str)))
+        return dict(list(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str))))
 
     def _reopen(self):
         self._reset_dcd_read()

@@ -33,14 +33,14 @@ Real MD simulation data, used for examples and the unit tests::
 try:
     from MDAnalysisTests.datafiles import *
 except ImportError:
-    print "*** ERROR ***"
-    print "In order to run the MDAnalysis test cases you must install the"
-    print "MDAnalysisTestData package (which has been separated from the "
-    print "library code itself since release 0.7.4). Go to "
-    print
-    print "     http://code.google.com/p/mdanalysis/downloads/list"
-    print
-    print "and download and install the `MDAnalysisTestData-x.y.z.tar.gz'"
-    print "which matches your MDAnalysis release or is smaller."
+    print("*** ERROR ***")
+    print("In order to run the MDAnalysis test cases you must install the")
+    print("MDAnalysisTestData package (which has been separated from the ")
+    print("library code itself since release 0.7.4). Go to ")
+    print()
+    print("     http://code.google.com/p/mdanalysis/downloads/list")
+    print()
+    print("and download and install the `MDAnalysisTestData-x.y.z.tar.gz'")
+    print("which matches your MDAnalysis release or is smaller.")
     raise ImportError("MDAnalysisTests package not installed.")
 

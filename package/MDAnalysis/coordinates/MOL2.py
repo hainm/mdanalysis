@@ -335,7 +335,7 @@ class MOL2Writer(base.Writer):
         if not start and traj.numframes > 1:
             start = traj.frame - 1
 
-        for framenumber in xrange(start, len(traj), step):
+        for framenumber in range(start, len(traj), step):
             traj[framenumber]
             self.write_next_timestep(obj)
 

@@ -204,7 +204,7 @@ class XYZWriter(base.Writer):
 
         self.xyz.write("{0:d}\n".format(ts.numatoms))
         self.xyz.write("frame {0}\n".format(ts.frame))
-        for atom, (x, y, z) in itertools.izip(self.atomnames, coordinates):
+        for atom, (x, y, z) in zip(self.atomnames, coordinates):
             self.xyz.write("%8s  %10.5f %10.5f %10.5f\n" % (atom, x, y, z))
 
 
@@ -353,7 +353,7 @@ class XYZReader(base.Reader):
         """reposition on first frame"""
         self._reopen()
         # the next method is inherited from the Reader Class and calls _read_next_timestep
-        self.next()
+        next(self)
 
     def _reopen(self):
         self.close()

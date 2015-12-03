@@ -35,11 +35,11 @@ The :class:`MDAnalysis.selections.base.SelectionWriter` base class and
 helper functions are in :mod:`MDAnalysis.selections.base`.
 """
 
-import vmd
-import pymol
-import gromacs
-import charmm
-from base import get_writer
+from . import vmd
+from . import pymol
+from . import gromacs
+from . import charmm
+from .base import get_writer
 
 
 # Signature:

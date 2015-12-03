@@ -271,9 +271,9 @@ class BaseHOLE(object):
            profiles = cPickle.load(open(filename))
 
         """
-        import cPickle
+        import pickle
 
-        cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.profiles, open(filename, "wb"), pickle.HIGHEST_PROTOCOL)
 
     def _process_plot_kwargs(self, kwargs):
         import matplotlib.colors
@@ -282,7 +282,7 @@ class BaseHOLE(object):
         kw = {}
         frames = kwargs.pop('frames', None)
         if frames is None:
-            frames = numpy.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
+            frames = numpy.sort(list(self.profiles.keys())[::kwargs.pop('step', 1)])
         else:
             frames = asiterable(frames)
         kw['frames'] = frames
@@ -338,12 +338,12 @@ class BaseHOLE(object):
         All other *kwargs* are passed to :func:`matplotlib.pyplot.plot`.
         """
         import matplotlib.pyplot as plt
-        from itertools import izip
+        
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
 
         ax = kwargs.pop('ax', plt.subplot(111))
-        for iplot, (frame, color, linestyle) in enumerate(izip(kw['frames'], kw['colors'], kw['linestyles'])):
+        for iplot, (frame, color, linestyle) in enumerate(zip(kw['frames'], kw['colors'], kw['linestyles'])):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
             kwargs['zorder'] = -frame
@@ -380,7 +380,7 @@ class BaseHOLE(object):
         """
         import matplotlib.pyplot as plt
         import mpl_toolkits.mplot3d.axes3d as axes3d
-        from itertools import izip
+        
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
         rmax = kw.pop('rmax', None)
@@ -388,7 +388,7 @@ class BaseHOLE(object):
 
         fig = plt.figure(figsize=kwargs.pop('figsize', (6, 6)))
         ax = fig.add_subplot(1, 1, 1, projection='3d')
-        for frame, color, linestyle in izip(kw['frames'], kw['colors'], kw['linestyles']):
+        for frame, color, linestyle in zip(kw['frames'], kw['colors'], kw['linestyles']):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
             kwargs['zorder'] = -frame
@@ -740,7 +740,7 @@ class HOLE(BaseHOLE):
         if self.shorto > 2:
             logger.warn("SHORTO (%d) needs to be < 3 in order to extract a HOLE profile!",
                         self.shorto)
-        for program, path in self.exe.items():
+        for program, path in list(self.exe.items()):
             if path is None or which(path) is None:
                 logger.error("Executable %(program)r not found, should have been %(path)r.",
                              vars())
@@ -1077,7 +1077,7 @@ class HOLEtraj(BaseHOLE):
         * If data is a array/list: use as is
         * If ``None``: assign frame numbers from trajectory
         """
-        if isinstance(data, basestring):
+        if isinstance(data, str):
             q = numpy.loadtxt(data)
         elif data is None:
             # frame numbers
@@ -1100,7 +1100,7 @@ class HOLEtraj(BaseHOLE):
         Keyword arguments *start*, *stop*, and *step* can be used to only
         analyse part of the trajectory.
         """
-        from itertools import izip
+        
 
         start = kwargs.pop('start', self.start)
         stop = kwargs.pop('stop', self.stop)
@@ -1120,7 +1120,7 @@ class HOLEtraj(BaseHOLE):
         # TODO: alternatively, dump all frames with leading framenumber and use a wildcard
         #       (although the file renaming might create problems...)
         protein = self.universe.selectAtoms(self.selection)
-        for q, ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
+        for q, ts in zip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
             logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)  # only need an empty file that can be overwritten, close right away (Issue 129)
@@ -1134,10 +1134,10 @@ class HOLEtraj(BaseHOLE):
                     pass
             if len(hole_profiles) != 1:
                 err_msg = "Got {0} profiles ({1}) --- should be 1 (time step {2})".format(
-                    len(hole_profiles), hole_profiles.keys(), ts)
+                    len(hole_profiles), list(hole_profiles.keys()), ts)
                 logger.error(err_msg)
                 warnings.warn(err_msg)
-            profiles[q] = hole_profiles.values()[0]
+            profiles[q] = list(hole_profiles.values())[0]
         self.profiles = profiles
 
     def run_hole(self, pdbfile, **kwargs):

@@ -41,7 +41,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+
 
 from math import ceil
 
@@ -140,7 +140,7 @@ class TOPParser(TopologyReader):
         # Open and check top validity
         # Reading header info POINTERS
         with openany(self.filename) as topfile:
-            next_line = topfile.next
+            next_line = topfile.__next__
             header = next_line()
             if header[:3] != "%VE":
                 raise ValueError("{0} is not a valid TOP file. %VE Missing in header".format(topfile))
@@ -151,7 +151,7 @@ class TOPParser(TopologyReader):
                 header = next_line()
             header = next_line()
 
-            topremarks = [next_line().strip() for i in xrange(4)]
+            topremarks = [next_line().strip() for i in range(4)]
             sys_info = [int(k) for i in topremarks for k in i.split()]
 
             structure = {}
@@ -217,10 +217,10 @@ class TOPParser(TopologyReader):
 
     def _parsebond(self, lines, atoms_per, attr, structure, numlines):
         section = []  # [None,]*numlines
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = lines()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            f = map(int, l.split())
+            f = list(map(int, l.split()))
             fields = [a-1 for a in f]
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
@@ -231,11 +231,11 @@ class TOPParser(TopologyReader):
         y = lines().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = lines()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             try:
-                for j in xrange(len(x.entries)):
+                for j in range(len(x.entries)):
                     section.append(int(l[x.entries[j].start:x.entries[j].stop].strip()))
             except:
                 continue
@@ -246,7 +246,7 @@ class TOPParser(TopologyReader):
         y = lines().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = lines()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             try:
@@ -261,7 +261,7 @@ class TOPParser(TopologyReader):
         y = lines().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = lines()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             for j in range(0, len(x.entries)):

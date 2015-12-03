@@ -29,7 +29,7 @@ universe.trajectory.skip = 10
 # appending atomic charges to a particular z-dimension (z-bin)
 nframes = 0
 for ts in universe.trajectory:
-    print ts.frame
+    print(ts.frame)
     nframes += 1
     # Recenter z coordinates
     z = universe.atoms.coordinates()[:, 2]

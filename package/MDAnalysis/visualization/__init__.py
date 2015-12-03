@@ -21,5 +21,5 @@
 """
 __all__ = ['streamlines', 'streamlines_3D']
 
-import streamlines
-import streamlines_3D
+from . import streamlines
+from . import streamlines_3D

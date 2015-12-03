@@ -28,7 +28,7 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 import re
 import numpy
 
-from AtomGroup import AtomGroup, Universe
+from .AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
 from MDAnalysis.lib.KDTree.NeighborSearch import CoordinateNeighborSearch
 
@@ -175,7 +175,7 @@ class AroundSelection(Selection):
             box = group.dimensions[:3]  # ignored with KDTree
         else:
             box = None
-        import distances
+        from . import distances
 
         dist = distances.distance_array(sys_coor, sel_coor, box)
         res_atoms = [
@@ -432,7 +432,7 @@ class PointSelection(Selection):
             box = group.dimensions[:3]
         else:
             box = None
-        import distances
+        from . import distances
 
         dist = distances.distance_array(sys_coor, ref_coor, box)
         res_atoms = [self._group_atoms_list[i] for i in numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]
@@ -1064,7 +1064,7 @@ class SelectionParser:
                                     data)  # check if in appropriate format 'lower:upper' or 'lower-upper'
                 if not selrange:
                     self.__error(op)
-                lower, upper = map(int, selrange.groups())
+                lower, upper = list(map(int, selrange.groups()))
             return self.classdict[op](lower, upper)
         elif op == self.PROP:
             prop = self.__consume_token()
@@ -1079,7 +1079,7 @@ class SelectionParser:
                 (self.GT, numpy.greater), (self.LT, numpy.less),
                 (self.GE, numpy.greater_equal), (self.LE, numpy.less_equal),
                 (self.EQ, numpy.equal), (self.NE, numpy.not_equal)])
-            if oper in ops.keys():
+            if oper in list(ops.keys()):
                 return self.classdict[op](prop, ops[oper], value, abs)
         elif op == self.ATOM:
             segid = self.__consume_token()

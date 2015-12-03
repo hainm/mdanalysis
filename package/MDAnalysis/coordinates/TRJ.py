@@ -126,7 +126,7 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+
 
 import numpy
 import warnings
@@ -247,7 +247,7 @@ class TRJReader(base.Reader):
 
         # Read box information
         if self.periodic:
-            line = self.trjfile.next()
+            line = next(self.trjfile)
             box = self.box_line_parser.read(line)
             ts._unitcell[:3] = numpy.array(box, dtype=numpy.float32)
             ts._unitcell[3:] = [90., 90., 90.]  # assumed
@@ -293,7 +293,7 @@ class TRJReader(base.Reader):
         self._read_next_timestep()
         ts = self.ts
         # TODO: what do we do with 1-frame trajectories? Try..except EOFError?
-        line = self.trjfile.next()
+        line = next(self.trjfile)
         nentries = self.default_line_parser.number_of_matches(line)
         if nentries == 3:
             self.periodic = True
@@ -323,7 +323,7 @@ class TRJReader(base.Reader):
         counter = 0
         try:
             while True:
-                self.next()
+                next(self)
                 counter += 1
         except EOFError:
             self.rewind()
@@ -364,7 +364,7 @@ class TRJReader(base.Reader):
     def rewind(self):
         """Reposition at the beginning of the trajectory"""
         self._reopen()
-        self.next()
+        next(self)
 
 
 class NCDFReader(base.Reader):

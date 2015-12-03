@@ -178,7 +178,7 @@ def start_logging(logfile="MDAnalysis.log"):
     The default logfile is named `MDAnalysis.log` and messages are
     logged with the tag *MDAnalysis*.
     """
-    import core.log
+    from . import core
 
     core.log.create("MDAnalysis", logfile=logfile)
     logging.getLogger("MDAnalysis").info("MDAnalysis %s STARTED logging to %r", __version__, logfile)
@@ -186,7 +186,7 @@ def start_logging(logfile="MDAnalysis.log"):
 
 def stop_logging():
     """Stop logging to logfile and console."""
-    import core.log
+    from . import core
 
     logger = logging.getLogger("MDAnalysis")
     logger.info("MDAnalysis STOPPED logging")
@@ -241,8 +241,8 @@ class StreamWarning(Warning):
     """
 
 # Bring some often used objects into the current namespace
-from core import Timeseries
-from core.AtomGroup import Universe, asUniverse, Merge
-from coordinates.core import writer as Writer
+from .core import Timeseries
+from .core.AtomGroup import Universe, asUniverse, Merge
+from .coordinates.core import writer as Writer
 
 collection = Timeseries.TimeseriesCollection()

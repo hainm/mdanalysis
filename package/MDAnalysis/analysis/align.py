@@ -741,7 +741,7 @@ def fasta2select(fastafilename, is_aligned=False,
     GAP = alignment[0].seq.alphabet.gap_char  # should be the same for both seqs
     if GAP != alignment[1].seq.alphabet.gap_char:
         raise ValueError("Different gap characters in sequence 'target' and 'mobile'.")
-    for ipos in xrange(alignment.get_alignment_length()):
+    for ipos in range(alignment.get_alignment_length()):
         aligned = list(alignment[:, ipos])
         if GAP in aligned:
             continue  # skip residue
@@ -753,7 +753,7 @@ def fasta2select(fastafilename, is_aligned=False,
             template += " and backbone"
         template = "( " + template + " )"
 
-        res_list.append([template % resid(iseq, ipos) for iseq in xrange(nseq)])
+        res_list.append([template % resid(iseq, ipos) for iseq in range(nseq)])
 
     sel = numpy.array(res_list).transpose()
 
@@ -830,7 +830,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 ag1.numberOfResidues(), ag2.numberOfResidues())
             dbgmsg = "mismatched residue numbers\n" + \
                 "\n".join(["{0} | {1}"  for r1, r2 in
-                           itertools.izip_longest(ag1.resids(), ag2.resids())])
+                           itertools.zip_longest(ag1.resids(), ag2.resids())])
             logger.error(errmsg)
             logger.debug(dbgmsg)
             raise SelectionError(errmsg)
@@ -875,7 +875,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                     logger.error("Offending residues: group {0}: {1}".format(
                             number,
                             ", ".join(["{0[0]}{0[1]} ({0[2]})".format(r) for r in
-                                       itertools.izip(ag.resnames()[mismatch_resindex],
+                                       zip(ag.resnames()[mismatch_resindex],
                                                       ag.resids()[mismatch_resindex],
                                                       rsize[mismatch_resindex]
                                                       )])))
@@ -920,7 +920,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         mismatch_atomindex = numpy.arange(ag1.numberOfAtoms())[mass_mismatches]
 
         logger.error("Atoms: reference | trajectory")
-        for ar, at in itertools.izip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
+        for ar, at in zip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
             logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %
                          (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                           at.segid, at.resid, at.resname, at.name, at.mass,))

@@ -53,7 +53,7 @@ algorithm.
 import numpy
 import MDAnalysis
 import networkx as NX
-import distances
+from . import distances
 import warnings
 
 
@@ -192,7 +192,7 @@ class LeafletFinder(object):
 
     def groups_iter(self):
         """Iterator over all leaflet :meth:`groups`"""
-        for component_index in xrange(len(self.components)):
+        for component_index in range(len(self.components)):
             yield self.group(component_index)
 
     def write_selection(self, filename, **kwargs):

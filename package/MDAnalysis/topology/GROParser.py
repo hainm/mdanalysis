@@ -31,7 +31,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+
 
 from ..core.util import openany
 from ..core.AtomGroup import Atom

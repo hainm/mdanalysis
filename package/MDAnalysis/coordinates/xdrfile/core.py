@@ -68,7 +68,7 @@ import os
 import errno
 import numpy as np
 import sys
-import cPickle
+import pickle
 import warnings
 
 from . import libxdrfile2
@@ -164,7 +164,7 @@ class TrjWriter(base.Writer):
         # See: http://sourceforge.net/p/swig/feature-requests/75
         # Only needed for Python < 3
         if sys.version_info[0] < 3:
-            if isinstance(filename, unicode):
+            if isinstance(filename, str):
                 self.filename = filename.encode("UTF-8")
 
         if convert_units is None:
@@ -354,7 +354,7 @@ class TrjReader(base.Reader):
         # See: http://sourceforge.net/p/swig/feature-requests/75
         # Only needed for Python < 3
         if sys.version_info[0] < 3:
-            if isinstance(filename, unicode):
+            if isinstance(filename, str):
                 self.filename = filename.encode("UTF-8")
 
         if convert_units is None:
@@ -476,7 +476,7 @@ class TrjReader(base.Reader):
             return self._delta
         try:
             t0 = self.ts.time
-            self.next()
+            next(self)
             t1 = self.ts.time
             self._delta = t1 - t0
         except IOError:
@@ -547,7 +547,7 @@ class TrjReader(base.Reader):
                   'offsets': self._offsets}
 
         with open(filename, 'wb') as f:
-            cPickle.dump(output, f)
+            pickle.dump(output, f)
 
     def load_offsets(self, filename, check=False):
         """Loads current trajectory offsets from pickled *filename*. 
@@ -587,7 +587,7 @@ class TrjReader(base.Reader):
             return
 
         with open(filename, 'rb') as f:
-            offsets = cPickle.load(f)
+            offsets = pickle.load(f)
 
         if check:
             conditions = False
@@ -748,9 +748,9 @@ class TrjReader(base.Reader):
     def _seek(self, pos, rel=False):
         """Traj seeker"""
         if rel:
-            status = libxdrfile2.xdr_seek(self.xdrfile, long(pos), libxdrfile2.SEEK_CUR)
+            status = libxdrfile2.xdr_seek(self.xdrfile, int(pos), libxdrfile2.SEEK_CUR)
         else:
-            status = libxdrfile2.xdr_seek(self.xdrfile, long(pos), libxdrfile2.SEEK_SET)
+            status = libxdrfile2.xdr_seek(self.xdrfile, int(pos), libxdrfile2.SEEK_SET)
         if status != libxdrfile2.exdrOK:
             raise IOError(errno.EIO,
                           "Problem seeking to offset %d (relative to current = %s) on file %s, status %s.\n"

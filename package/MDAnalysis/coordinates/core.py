@@ -125,7 +125,7 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
        Added *multiframe* keyword; the default ``None`` reflects the previous
        behaviour.
     """
-    if isinstance(filename, basestring) and filename:
+    if isinstance(filename, str) and filename:
         root, ext = get_ext(filename)
         format = check_compressed_format(root, ext)
     if multiframe is None:
@@ -259,7 +259,7 @@ def guess_format(filename, format=None):
             "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
             "           For missing formats, raise an issue at "
             "http://issues.mdanalysis.org".format(
-                format, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
+                format, filename, list(MDAnalysis.coordinates._trajectory_readers.keys())))
             #TypeError: ...."
     return format
 
@@ -308,7 +308,7 @@ def triclinic_box(x, y, z):
 
     .. SeeAlso:: Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
     """
-    A, B, C = [_veclength(v) for v in x, y, z]
+    A, B, C = [_veclength(v) for v in (x, y, z)]
     alpha = _angle(y, z)
     beta = _angle(x, z)
     gamma = _angle(x, y)

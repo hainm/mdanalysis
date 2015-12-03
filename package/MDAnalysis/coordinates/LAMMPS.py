@@ -85,7 +85,7 @@ class DCDWriter(DCD.DCDWriter):
         self.units = {'time': 'ps', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
         self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
-        for unit_type, unit in self.units.items():
+        for unit_type, unit in list(self.units.items()):
             try:
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDWriter: wrong unit %r for unit type %r" % (unit, unit_type))
@@ -108,7 +108,7 @@ class DCDReader(DCD.DCDReader):
         self.units = {'time': 'ps', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
         self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
-        for unit_type, unit in self.units.items():
+        for unit_type, unit in list(self.units.items()):
             try:
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDReader: wrong unit %r for unit type %r" % (unit, unit_type))

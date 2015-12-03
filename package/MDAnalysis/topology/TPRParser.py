@@ -106,7 +106,7 @@ before 4.x)
 .. _`Issue 2`: https://github.com/MDAnalysis/mdanalysis/issues/2
 .. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment
 """
-from __future__ import absolute_import
+
 __author__ = "Zhuyi Xue"
 __copyright__ = "GNU Public Licence, v2"
 

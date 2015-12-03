@@ -36,7 +36,7 @@ Deprecated classes
    :members:
 
 """
-from __future__ import absolute_import
+
 
 import numpy as np
 import logging
@@ -218,9 +218,9 @@ class DATAParser(TopologyReader):
 
     def _parse_pos(self, datafile, pos):
         """Strip coordinate info into np array"""
-        datafile.next()
-        for i in xrange(pos.shape[0]):
-            line = datafile.next()
+        next(datafile)
+        for i in range(pos.shape[0]):
+            line = next(datafile)
             idx, resid, atype, q, x, y, z = self._parse_atom_line(line)
             # assumes atom ids are well behaved?
             # LAMMPS sometimes dumps atoms in random order
@@ -245,33 +245,33 @@ class DATAParser(TopologyReader):
         # logger.debug('Line is {}'.format(line))
         q = guess_atom_charge(0.0)  # charge is zero by default
 
-        idx, resid, atype = map(int, line[:3])
+        idx, resid, atype = list(map(int, line[:3]))
         idx -= 1  # 0 based atom ids in mda, 1 based in lammps
         if n in [7, 10]:  # atom_style full
-            q, x, y, z = map(float, line[3:7])
+            q, x, y, z = list(map(float, line[3:7]))
         elif n in [6, 9]:  # atom_style molecular
-            x, y, z = map(float, line[3:6])
+            x, y, z = list(map(float, line[3:6]))
 
         return idx, resid, atype, q, x, y, z
 
     def _parse_vel(self, datafile, vel):
         """Strip velocity info into np array"""
-        datafile.next()
-        for i in xrange(vel.shape[0]):
+        next(datafile)
+        for i in range(vel.shape[0]):
             line = datafile.next().split()
             idx = int(line[0]) - 1
-            vx, vy, vz = map(float, line[1:4])
+            vx, vy, vz = list(map(float, line[1:4]))
             vel[idx] = vx, vy, vz
 
     def _parse_section(self, datafile, nlines, nentries):
         """Read lines and strip information"""
-        datafile.next()
+        next(datafile)
         section = []
-        for i in xrange(nlines):
+        for i in range(nlines):
             line = datafile.next().split()
             # logging.debug("Line is: {}".format(line))
             # map to 0 based int
-            section.append(tuple(map(lambda x: int(x) - 1, line[2:2 + nentries])))
+            section.append(tuple([int(x) - 1 for x in line[2:2 + nentries]]))
 
         return tuple(section)
 
@@ -288,8 +288,8 @@ class DATAParser(TopologyReader):
         """
         logger.info("Doing Atoms section")
         atoms = []
-        datafile.next()
-        for i in xrange(natoms):
+        next(datafile)
+        for i in range(natoms):
             line = datafile.next().strip()
             # logger.debug("Line: {} contains: {}".format(i, line))
             idx, resid, atype, q, x, y, z = self._parse_atom_line(line)
@@ -316,8 +316,8 @@ class DATAParser(TopologyReader):
 
         masses = {}
 
-        datafile.next()
-        for i in xrange(ntypes):
+        next(datafile)
+        for i in range(ntypes):
             line = datafile.next().split()
             masses[int(line[0])] = float(line[1])
 
@@ -325,7 +325,7 @@ class DATAParser(TopologyReader):
 
     def _skip_section(self, datafile):
         """Read lines but don't parse"""
-        datafile.next()
+        next(datafile)
         line = datafile.next().split()
         while len(line) != 0:
             try:
@@ -346,10 +346,10 @@ class DATAParser(TopologyReader):
             'angles': 'angles',
             'dihedrals': 'torsions',
             'impropers': 'impropers'}
-        nitems = dict.fromkeys(hvals.values(), 0)
+        nitems = dict.fromkeys(list(hvals.values()), 0)
 
-        datafile.next()  # Title
-        datafile.next()  # Blank line
+        next(datafile)  # Title
+        next(datafile)  # Blank line
 
         line = datafile.next().strip()
         while line:
@@ -357,7 +357,7 @@ class DATAParser(TopologyReader):
             nitems[hvals[key]] = int(val)
             line = datafile.next().strip()
 
-        ntypes = dict.fromkeys(hvals.values(), 0)
+        ntypes = dict.fromkeys(list(hvals.values()), 0)
         line = datafile.next().strip()
         while line:
             val, key, _ = line.split()
@@ -369,7 +369,7 @@ class DATAParser(TopologyReader):
         box[0:2] = datafile.next().split()[:2]
         box[2:4] = datafile.next().split()[:2]
         box[4:6] = datafile.next().split()[:2]
-        datafile.next()
+        next(datafile)
 
         return nitems, ntypes, box
 
@@ -464,8 +464,8 @@ class LAMMPSDataConverter(object):  # pragma: no cover
         else:
             # Open and check validity
             with openany(filename, 'r') as file:
-                file_iter = file.xreadlines()
-                self.title = file_iter.next()
+                file_iter = file
+                self.title = next(file_iter)
                 # Parse headers
                 headers = self.headers
                 for l in file_iter:
@@ -487,7 +487,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
             # Parse sections
             # XXX This is a crappy way to do it
             with openany(filename, 'r') as file:
-                file_iter = file.xreadlines()
+                file_iter = file
                 # Create coordinate array
                 positions = np.zeros((headers['atoms'], 3), np.float64)
                 sections = self.sections
@@ -498,25 +498,25 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                     if line in self.coeff:
                         h, numcoeff = self.coeff[line]
                         # skip line
-                        file_iter.next()
+                        next(file_iter)
                         data = []
-                        for i in xrange(headers[h]):
+                        for i in range(headers[h]):
                             fields = file_iter.next().strip().split()
                             data.append(tuple(map(conv_float, fields[1:])))
                         sections[line] = data
                     elif line in self.connections:
                         h, numfields = self.connections[line]
                         # skip line
-                        file_iter.next()
+                        next(file_iter)
                         data = []
                         for i in range(headers[h]):
                             fields = file_iter.next().strip().split()
                             data.append(tuple(map(int, fields[1:])))
                         sections[line] = data
                     elif line == "Atoms":
-                        file_iter.next()
+                        next(file_iter)
                         data = []
-                        for i in xrange(headers["atoms"]):
+                        for i in range(headers["atoms"]):
                             fields = file_iter.next().strip().split()
                             index = int(fields[0]) - 1
                             a = LAMMPSAtom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]),
@@ -526,11 +526,11 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                             positions[index] = np.array([float(fields[4]), float(fields[5]), float(fields[6])])
                         sections[line] = data
                     elif line == "Masses":
-                        file_iter.next()
+                        next(file_iter)
                         data = []
-                        for i in xrange(headers["atom type"]):
+                        for i in range(headers["atom type"]):
                             fields = file_iter.next().strip().split()
-                            print "help"
+                            print("help")
                 self.positions = positions
 
     def writePSF(self, filename, names=None):
@@ -573,7 +573,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                     bonds = bond_list[index:index + 4]
                 except IndexError:
                     bonds = bond_list[index:-1]
-                bond_line = map(lambda bond: string.rjust(str(bond[1]), 8) + string.rjust(str(bond[2]), 8), bonds)
+                bond_line = [string.rjust(str(bond[1]), 8) + string.rjust(str(bond[2]), 8) for bond in bonds]
                 file.write(''.join(bond_line) + '\n')
 
     def writePDB(self, filename):

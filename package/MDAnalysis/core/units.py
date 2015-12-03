@@ -155,7 +155,7 @@ References and footnotes
 
 """
 
-from __future__ import unicode_literals
+
 
 #: `Avogadro's constant`_ in mol**-1.
 #:
@@ -310,8 +310,8 @@ conversion_factor = {
 #: Note: Any unit must be *unique* because this dict is used to guess the
 #: unit type.
 unit_types = {}
-for utype, ufactor in conversion_factor.items():
-    for unit in ufactor.keys():
+for utype, ufactor in list(conversion_factor.items()):
+    for unit in list(ufactor.keys()):
         assert not unit in unit_types  # see comment!
         unit_types[unit] = utype
 

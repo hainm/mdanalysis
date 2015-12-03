@@ -133,10 +133,10 @@ class Flags(dict):
         self.get_flag(name).set(value)
 
     def _itervalues(self):
-        return super(Flags, self).itervalues()
+        return iter(super(Flags, self).values())
 
     def _items(self):
-        return super(Flags, self).items()
+        return list(super(Flags, self).items())
 
     def itervalues(self):
         for flag in self._itervalues():
@@ -153,7 +153,7 @@ class Flags(dict):
         return [(flag.name, flag.value) for flag in self._itervalues()]
 
     def __repr__(self):
-        return str(self.items())
+        return str(list(self.items()))
 
 
 class FlagsDynamicDocs(Flags):
@@ -214,7 +214,7 @@ class Flag(object):
             try:
                 self.value = self.mapping[value]
             except KeyError:
-                raise ValueError("flag must be None or one of " + str(self.mapping.keys()))
+                raise ValueError("flag must be None or one of " + str(list(self.mapping.keys())))
         return self.get()
 
     def prop(self):
@@ -443,6 +443,6 @@ class flagsDocs(object):
     __doc__ = flags.doc()
 
 
-import AtomGroup
-import Selection
-import Timeseries
+from . import AtomGroup
+from . import Selection
+from . import Timeseries

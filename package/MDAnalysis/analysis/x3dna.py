@@ -113,7 +113,7 @@ Utilities
 
 
 """
-from __future__ import with_statement
+
 
 import numpy
 
@@ -150,18 +150,18 @@ def mean_std_from_x3dnaPickle(profile):
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = [], [], [], [], [], [], [], [], [], [], [], []
         for i in range(len(profile)):
-            bp_shear.append(profile.values()[i].Shear)
-            bp_stretch.append(profile.values()[i].Stretch)
-            bp_stagger.append(profile.values()[i].Stagger)
-            bp_buckle.append(profile.values()[i].Buckle)
-            bp_prop.append(profile.values()[i].Propeller)
-            bp_open.append(profile.values()[i].Opening)
-            bp_rise.append(profile.values()[i].Rise)
-            bp_shift.append(profile.values()[i].Shift)
-            bp_slide.append(profile.values()[i].Slide)
-            bp_tilt.append(profile.values()[i].Tilt)
-            bp_roll.append(profile.values()[i].Roll)
-            bp_twist.append(profile.values()[i].Twist)
+            bp_shear.append(list(profile.values())[i].Shear)
+            bp_stretch.append(list(profile.values())[i].Stretch)
+            bp_stagger.append(list(profile.values())[i].Stagger)
+            bp_buckle.append(list(profile.values())[i].Buckle)
+            bp_prop.append(list(profile.values())[i].Propeller)
+            bp_open.append(list(profile.values())[i].Opening)
+            bp_rise.append(list(profile.values())[i].Rise)
+            bp_shift.append(list(profile.values())[i].Shift)
+            bp_slide.append(list(profile.values())[i].Slide)
+            bp_tilt.append(list(profile.values())[i].Tilt)
+            bp_roll.append(list(profile.values())[i].Roll)
+            bp_twist.append(list(profile.values())[i].Twist)
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = numpy.array(bp_shear), numpy.array(bp_stretch), numpy.array(bp_stagger), numpy.array(bp_rise),\
             numpy.array(bp_shift), numpy.array(bp_slide), numpy.array(bp_buckle), numpy.array(bp_prop), \
@@ -182,12 +182,12 @@ def mean_std_from_x3dnaPickle(profile):
         bp_rise, bp_shift, bp_slide, bp_tilt, bp_roll, bp_twist = [], [], [], [], [], [], [], [], [], [], [], []
         for i in range(len(profile)):
             #print i
-            bp_rise.append(profile.values()[i].Rise)
-            bp_shift.append(profile.values()[i].Shift)
-            bp_slide.append(profile.values()[i].Slide)
-            bp_tilt.append(profile.values()[i].Tilt)
-            bp_roll.append(profile.values()[i].Roll)
-            bp_twist.append(profile.values()[i].Twist)
+            bp_rise.append(list(profile.values())[i].Rise)
+            bp_shift.append(list(profile.values())[i].Shift)
+            bp_slide.append(list(profile.values())[i].Slide)
+            bp_tilt.append(list(profile.values())[i].Tilt)
+            bp_roll.append(list(profile.values())[i].Roll)
+            bp_twist.append(list(profile.values())[i].Twist)
         bp_rise, bp_shift, bp_slide, bp_tilt, bp_roll, bp_twist = numpy.array(bp_shear),numpy.array(bp_stretch),\
             numpy.array(bp_stagger), numpy.array(bp_rise), numpy.array(bp_shift), numpy.array(bp_slide),\
             numpy.array(bp_buckle), numpy.array(bp_prop), numpy.array(bp_open), numpy.array(bp_tilt),\
@@ -221,9 +221,9 @@ class BaseX3DNA(object):
            profiles = cPickle.load(open(filename))
 
         """
-        import cPickle
+        import pickle
 
-        cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.profiles, open(filename, "wb"), pickle.HIGHEST_PROTOCOL)
 
     def mean_std(self):
         """H.mean_std() returns the mean and standard deviation of base parameters (order of base parameters:Shear,
@@ -234,18 +234,18 @@ class BaseX3DNA(object):
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = [], [], [], [], [], [], [], [], [], [], [], []
         for i in range(len(self.profiles)):
-            bp_shear.append(self.profiles.values()[i].Shear)
-            bp_stretch.append(self.profiles.values()[i].Stretch)
-            bp_stagger.append(self.profiles.values()[i].Stagger)
-            bp_buckle.append(self.profiles.values()[i].Buckle)
-            bp_prop.append(self.profiles.values()[i].Propeller)
-            bp_open.append(self.profiles.values()[i].Opening)
-            bp_rise.append(self.profiles.values()[i].Rise)
-            bp_shift.append(self.profiles.values()[i].Shift)
-            bp_slide.append(self.profiles.values()[i].Slide)
-            bp_tilt.append(self.profiles.values()[i].Tilt)
-            bp_roll.append(self.profiles.values()[i].Roll)
-            bp_twist.append(self.profiles.values()[i].Twist)
+            bp_shear.append(list(self.profiles.values())[i].Shear)
+            bp_stretch.append(list(self.profiles.values())[i].Stretch)
+            bp_stagger.append(list(self.profiles.values())[i].Stagger)
+            bp_buckle.append(list(self.profiles.values())[i].Buckle)
+            bp_prop.append(list(self.profiles.values())[i].Propeller)
+            bp_open.append(list(self.profiles.values())[i].Opening)
+            bp_rise.append(list(self.profiles.values())[i].Rise)
+            bp_shift.append(list(self.profiles.values())[i].Shift)
+            bp_slide.append(list(self.profiles.values())[i].Slide)
+            bp_tilt.append(list(self.profiles.values())[i].Tilt)
+            bp_roll.append(list(self.profiles.values())[i].Roll)
+            bp_twist.append(list(self.profiles.values())[i].Twist)
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = numpy.array(bp_shear), numpy.array(bp_stretch), numpy.array(bp_stagger), numpy.array(bp_rise),\
             numpy.array(bp_shift), numpy.array(bp_slide), numpy.array(bp_buckle), numpy.array(bp_prop),\
@@ -273,18 +273,18 @@ class BaseX3DNA(object):
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = [], [], [], [], [], [], [], [], [], [], [], []
         for i in range(len(self.profiles)):
-            bp_shear.append(self.profiles.values()[i].Shear)
-            bp_stretch.append(self.profiles.values()[i].Stretch)
-            bp_stagger.append(self.profiles.values()[i].Stagger)
-            bp_buckle.append(self.profiles.values()[i].Buckle)
-            bp_prop.append(self.profiles.values()[i].Propeller)
-            bp_open.append(self.profiles.values()[i].Opening)
-            bp_rise.append(self.profiles.values()[i].Rise)
-            bp_shift.append(self.profiles.values()[i].Shift)
-            bp_slide.append(self.profiles.values()[i].Slide)
-            bp_tilt.append(self.profiles.values()[i].Tilt)
-            bp_roll.append(self.profiles.values()[i].Roll)
-            bp_twist.append(self.profiles.values()[i].Twist)
+            bp_shear.append(list(self.profiles.values())[i].Shear)
+            bp_stretch.append(list(self.profiles.values())[i].Stretch)
+            bp_stagger.append(list(self.profiles.values())[i].Stagger)
+            bp_buckle.append(list(self.profiles.values())[i].Buckle)
+            bp_prop.append(list(self.profiles.values())[i].Propeller)
+            bp_open.append(list(self.profiles.values())[i].Opening)
+            bp_rise.append(list(self.profiles.values())[i].Rise)
+            bp_shift.append(list(self.profiles.values())[i].Shift)
+            bp_slide.append(list(self.profiles.values())[i].Slide)
+            bp_tilt.append(list(self.profiles.values())[i].Tilt)
+            bp_roll.append(list(self.profiles.values())[i].Roll)
+            bp_twist.append(list(self.profiles.values())[i].Twist)
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = numpy.array(bp_shear), numpy.array(bp_stretch), numpy.array(bp_stagger), numpy.array(bp_rise),\
             numpy.array(bp_shift), numpy.array(bp_slide), numpy.array(bp_buckle), numpy.array(bp_prop),\
@@ -309,18 +309,18 @@ class BaseX3DNA(object):
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = [], [], [], [], [], [], [], [], [], [], [], []
         for i in range(len(self.profiles)):
-            bp_shear.append(self.profiles.values()[i].Shear)
-            bp_stretch.append(self.profiles.values()[i].Stretch)
-            bp_stagger.append(self.profiles.values()[i].Stagger)
-            bp_buckle.append(self.profiles.values()[i].Buckle)
-            bp_prop.append(self.profiles.values()[i].Propeller)
-            bp_open.append(self.profiles.values()[i].Opening)
-            bp_rise.append(self.profiles.values()[i].Rise)
-            bp_shift.append(self.profiles.values()[i].Shift)
-            bp_slide.append(self.profiles.values()[i].Slide)
-            bp_tilt.append(self.profiles.values()[i].Tilt)
-            bp_roll.append(self.profiles.values()[i].Roll)
-            bp_twist.append(self.profiles.values()[i].Twist)
+            bp_shear.append(list(self.profiles.values())[i].Shear)
+            bp_stretch.append(list(self.profiles.values())[i].Stretch)
+            bp_stagger.append(list(self.profiles.values())[i].Stagger)
+            bp_buckle.append(list(self.profiles.values())[i].Buckle)
+            bp_prop.append(list(self.profiles.values())[i].Propeller)
+            bp_open.append(list(self.profiles.values())[i].Opening)
+            bp_rise.append(list(self.profiles.values())[i].Rise)
+            bp_shift.append(list(self.profiles.values())[i].Shift)
+            bp_slide.append(list(self.profiles.values())[i].Slide)
+            bp_tilt.append(list(self.profiles.values())[i].Tilt)
+            bp_roll.append(list(self.profiles.values())[i].Roll)
+            bp_twist.append(list(self.profiles.values())[i].Twist)
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = numpy.array(bp_shear), numpy.array(bp_stretch), numpy.array(bp_stagger), numpy.array(bp_rise),\
             numpy.array(bp_shift), numpy.array(bp_slide), numpy.array(bp_buckle), numpy.array(bp_prop),\
@@ -345,16 +345,16 @@ class BaseX3DNA(object):
 
         """
         import matplotlib.pyplot as plt
-        from itertools import izip
+        
 
         na_avg, na_std = self.mean_std()
         for k in range(len(na_avg[0])):
             ax = kwargs.pop('ax', plt.subplot(111))
-            x = range(1, len(na_avg[:, k]) + 1)
+            x = list(range(1, len(na_avg[:, k]) + 1))
             ax.errorbar(x, na_avg[:, k], yerr=na_std[:, k], fmt='-o')
             ax.set_xlim(0, len(na_avg[:, k]) + 1)
             ax.set_xlabel(r"Nucleic Acid Number")
-            param = self.profiles.values()[0].dtype.names[k]
+            param = list(self.profiles.values())[0].dtype.names[k]
             if param in ["Shear", "Stretch", "Stagger", "Rise", "Shift", "Slide"]:
                 ax.set_ylabel("%s ($\AA$)" % (param))
             else:
@@ -456,7 +456,7 @@ class X3DNA(BaseX3DNA):
             self.template = textwrap.dedent("""find_pair -s %(filename)r stdout |analyze stdin """)
 
         # sanity checks
-        for program, path in self.exe.items():
+        for program, path in list(self.exe.items()):
             if path is None or which(path) is None:
                 logger.error("Executable %(program)r not found, should have been %(path)r.",
                              vars())
@@ -688,7 +688,7 @@ class X3DNAtraj(BaseX3DNA):
         Keyword arguments *start*, *stop*, and *step* can be used to only
         analyse part of the trajectory.
         """
-        from itertools import izip
+        
 
         start = kwargs.pop('start', self.start)
         stop = kwargs.pop('stop', self.stop)
@@ -701,8 +701,8 @@ class X3DNAtraj(BaseX3DNA):
 
         nucleic = self.universe.selectAtoms(self.selection)
         for ts in self.universe.trajectory[start:stop:step]:
-            print ts.frame
-            print nucleic.atoms
+            print(ts.frame)
+            print(nucleic.atoms)
             logger.info("X3DNA analysis frame %4d ", ts.frame)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)
@@ -724,10 +724,10 @@ class X3DNAtraj(BaseX3DNA):
                     pass
             if len(x3dna_profiles) != 1:
                 err_msg = "Got {0} profiles ({1}) --- should be 1 (time step {2})".format(
-                    len(x3dna_profiles), x3dna_profiles.keys(), ts)
+                    len(x3dna_profiles), list(x3dna_profiles.keys()), ts)
                 logger.error(err_msg)
                 warnings.warn(err_msg)
-            profiles[ts.frame] = x3dna_profiles.values()[0]
+            profiles[ts.frame] = list(x3dna_profiles.values())[0]
         self.profiles = profiles
 
     def run_x3dna(self, pdbfile, **kwargs):

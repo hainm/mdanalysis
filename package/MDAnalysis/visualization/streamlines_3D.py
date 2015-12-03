@@ -89,7 +89,7 @@ def split_grid(grid, num_cores):
     for x_sheet_coords, y_sheet_coords, z_sheet_coords in zip(ordered_list_per_sheet_x_values,
                                                               ordered_list_per_sheet_y_values,
                                                               ordered_list_per_sheet_z_values):
-        ordered_list_cartesian_coordinates_per_sheet.append(zip(x_sheet_coords, y_sheet_coords, z_sheet_coords))
+        ordered_list_cartesian_coordinates_per_sheet.append(list(zip(x_sheet_coords, y_sheet_coords, z_sheet_coords)))
     array_ordered_cartesian_coords_per_sheet = numpy.array(ordered_list_cartesian_coordinates_per_sheet)
     #now I'm going to want to build cubes in an ordered fashion, and in such a way that I can track the index /
     # centroid of each cube for domain decomposition / reconstruction and mayavi mlab.flow() input
@@ -196,7 +196,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
         corresponding to the indices of the relevant particles that fall within a given cube. Also, for a given cube,
         store a key/value pair for the centroid of the particles that fall within the cube.'''
         cube_counter = 0
-        for key, cube in dictionary_cube_data_this_core.iteritems():
+        for key, cube in dictionary_cube_data_this_core.items():
             index_list_in_cube = point_in_cube(array_simulation_particle_coordinates, cube['vertex_list'],
                                                cube['centroid'])
             cube['start_frame_index_list_in_cube'] = index_list_in_cube
@@ -211,7 +211,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
     def update_dictionary_end_frame(array_simulation_particle_coordinates, dictionary_cube_data_this_core):
         '''Update the cube dictionary objects again as appropriate for the second and final frame.'''
         cube_counter = 0
-        for key, cube in dictionary_cube_data_this_core.iteritems():
+        for key, cube in dictionary_cube_data_this_core.items():
             # if there were no particles in the cube in the first frame, then set dx,dy,dz each to 0
             if cube['centroid_of_particles_first_frame'] == 'empty':
                 cube['dx'] = 0

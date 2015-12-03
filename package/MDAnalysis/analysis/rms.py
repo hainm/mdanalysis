@@ -121,7 +121,7 @@ Analysis classes
 
 """
 
-from itertools import izip
+
 import numpy
 
 import MDAnalysis
@@ -328,7 +328,7 @@ class RMSD(object):
         if numpy.any(mass_mismatches):
             # diagnostic output:
             logger.error("Atoms: reference | trajectory")
-            for ar, at in izip(self.ref_atoms, self.traj_atoms):
+            for ar, at in zip(self.ref_atoms, self.traj_atoms):
                 if ar.name != at.name:
                     logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %
                                  (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
@@ -379,7 +379,7 @@ class RMSD(object):
              frame index to select frame from *reference*
 
         """
-        from itertools import izip
+        
 
         start = kwargs.pop('start', None)
         stop = kwargs.pop('stop', None)
@@ -462,7 +462,7 @@ class RMSD(object):
 
                 # 2) calculate secondary RMSDs
                 for igroup, (refpos, atoms) in enumerate(
-                        izip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
+                        zip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
                     rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(refpos,
                                                                    atoms['mobile'].positions.T.astype(numpy.float64),
                                                                    atoms['mobile'].numberOfAtoms(), None, weight)

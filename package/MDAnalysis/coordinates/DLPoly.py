@@ -58,11 +58,11 @@ class ConfigReader(base.SingleFrameReader):
     def _read_first_frame(self):
         with open(self.filename, 'r') as inf:
             self.title = inf.readline().strip()
-            levcfg, imcon, megatm = map(int, inf.readline().split()[:3])
+            levcfg, imcon, megatm = list(map(int, inf.readline().split()[:3]))
             if not imcon == 0:
-                cellx = map(float, inf.readline().split())
-                celly = map(float, inf.readline().split())
-                cellz = map(float, inf.readline().split())
+                cellx = list(map(float, inf.readline().split()))
+                celly = list(map(float, inf.readline().split()))
+                cellz = list(map(float, inf.readline().split()))
 
             ids = []
             coords = []
@@ -87,13 +87,13 @@ class ConfigReader(base.SingleFrameReader):
                 else:
                     ids.append(idx)
 
-                xyz = map(float, inf.readline().split())
+                xyz = list(map(float, inf.readline().split()))
                 coords.append(xyz)
                 if has_vels:
-                    vxyz = map(float, inf.readline().split())
+                    vxyz = list(map(float, inf.readline().split()))
                     velocities.append(vxyz)
                 if has_forces:
-                    fxyz = map(float, inf.readline().split())
+                    fxyz = list(map(float, inf.readline().split()))
                     forces.append(fxyz)
 
                 line = inf.readline().strip()
@@ -157,7 +157,7 @@ class HistoryReader(base.Reader):
         # "private" file handle
         self._file = open(self.filename, 'r')
         self.title = self._file.readline().strip()
-        self._levcfg, self._imcon, self.numatoms = map(int, self._file.readline().split()[:3])
+        self._levcfg, self._imcon, self.numatoms = list(map(int, self._file.readline().split()[:3]))
         self._has_vels = True if self._levcfg > 0 else False
         self._has_forces = True if self._levcfg == 2 else False
 
@@ -174,9 +174,9 @@ class HistoryReader(base.Reader):
         if not line.startswith('timestep'):
             raise IOError
         if not self._imcon == 0:
-            ts._unitcell[0] = map(float, self._file.readline().split())
-            ts._unitcell[1] = map(float, self._file.readline().split())
-            ts._unitcell[2] = map(float, self._file.readline().split())
+            ts._unitcell[0] = list(map(float, self._file.readline().split()))
+            ts._unitcell[1] = list(map(float, self._file.readline().split()))
+            ts._unitcell[2] = list(map(float, self._file.readline().split()))
 
         # If ids are given, put them in here
         # and later sort by them
@@ -192,11 +192,11 @@ class HistoryReader(base.Reader):
                 ids.append(idx)
 
             # Read in this order for now, then later reorder in place
-            ts._pos[i] = map(float, self._file.readline().split())
+            ts._pos[i] = list(map(float, self._file.readline().split()))
             if self._has_vels:
-                ts._velocities[i] = map(float, self._file.readline().split())
+                ts._velocities[i] = list(map(float, self._file.readline().split()))
             if self._has_forces:
-                ts._forces[i] = map(float, self._file.readline().split())
+                ts._forces[i] = list(map(float, self._file.readline().split()))
 
         if ids:
             ids = np.array(ids)
@@ -262,7 +262,7 @@ class HistoryReader(base.Reader):
 
     def rewind(self):
         self._reopen()
-        self.next()
+        next(self)
 
     def _reopen(self):
         self.close()

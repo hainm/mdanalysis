@@ -9,9 +9,9 @@ u = MDAnalysis.Universe(PSF, DCD)
 C = MDAnalysis.analysis.gnm.GNMAnalysis(u, ReportVector="output.txt")
 
 C.run()
-output = zip(*C.results)
+output = list(zip(*C.results))
 
 outputfile = open("eigenvalues.dat", "w")
 for item in output[1]:
-    print >> outputfile, item
+    print(item, file=outputfile)
 outputfile.close()

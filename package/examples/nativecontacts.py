@@ -51,7 +51,7 @@ except ImportError:
 C = MDAnalysis.analysis.contacts.ContactAnalysis(PSF, DCD, targetdir="./output")
 C.run()
 
-print "Data file was written to %r" % C.output_bz2
+print("Data file was written to %r" % C.output_bz2)
 
 if have_matplotlib:
     matplotlib.rc('font', size=14)
@@ -62,4 +62,4 @@ if have_matplotlib:
     savefig("./figures/nativecontacts.pdf")
     savefig("./figures/nativecontacts.png")
 
-    print "Wrote figures to ./figures/nativecontacts.{pdf,png}"
+    print("Wrote figures to ./figures/nativecontacts.{pdf,png}")

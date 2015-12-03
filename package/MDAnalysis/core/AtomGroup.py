@@ -396,7 +396,7 @@ Classes and functions
 .. _ATOM: http://www.wwpdb.org/documentation/format23/sect9.html#ATOM
 
 """
-from __future__ import print_function, absolute_import
+
 
 # Global imports
 import warnings
@@ -1376,7 +1376,7 @@ class AtomGroup(object):
             for x in group:
                 setattr(x, name, conversion(values[0]))
         elif len(group) == len(values):
-            for x, value in itertools.izip(group, values):
+            for x, value in zip(group, values):
                 setattr(x, name, conversion(value))
         else:
             raise ValueError("set_{0}: can only set all atoms to a single value or each atom to a distinct one "
@@ -1676,7 +1676,7 @@ class AtomGroup(object):
         else:
             recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
         tensor = numpy.zeros((3, 3))
-        for x in xrange(recenteredpos.shape[0]):
+        for x in range(recenteredpos.shape[0]):
             tensor += masses[x] * numpy.outer(recenteredpos[x, :],
                                               recenteredpos[x, :])
         tensor /= self.totalMass()
@@ -1707,7 +1707,7 @@ class AtomGroup(object):
         else:
             recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
         tensor = numpy.zeros((3, 3))
-        for x in xrange(recenteredpos.shape[0]):
+        for x in range(recenteredpos.shape[0]):
             tensor += masses[x] * numpy.outer(recenteredpos[x, :],
                                               recenteredpos[x, :])
         tensor /= self.totalMass()
@@ -2467,7 +2467,7 @@ class AtomGroup(object):
         dests = distances.applyPBC(centers, box=box)
         shifts = dests - centers
 
-        for o, s in itertools.izip(objects, shifts):
+        for o, s in zip(objects, shifts):
             # Save some needless shifts
             if not all(s == 0.0):
                 o.translate(s)
@@ -2515,7 +2515,7 @@ class AtomGroup(object):
             ids = numpy.array([getattr(atom, accessors[level]) for atom in self])
         except KeyError:
             raise ValueError("level = '{0}' not supported, must be one of {1}".format(
-                    level, accessors.keys()))
+                    level, list(accessors.keys())))
 
         # now sort the resids so that it doesn't matter if the AG contains
         # atoms in random order (i.e. non-sequential resids); groupby needs
@@ -2526,7 +2526,7 @@ class AtomGroup(object):
         # by indexing self (using advanced slicing eg g[[1,2,3]]
         groups = [
             self[[idx_k[0] for idx_k in groupings]]  # one AtomGroup for each residue or segment
-            for k, groupings in itertools.groupby(itertools.izip(idx, sorted_ids), lambda v: v[1])
+            for k, groupings in itertools.groupby(zip(idx, sorted_ids), lambda v: v[1])
             ]
         return groups
 
@@ -2850,7 +2850,7 @@ class ResidueGroup(AtomGroup):
         if len(values) == 1:
             self._set_atoms(name, values[0], **kwargs)
         elif len(values) == len(self.residues):
-            for r, value in itertools.izip(self.residues, values):
+            for r, value in zip(self.residues, values):
                 r._set_atoms(name, value, **kwargs)
         else:
             raise ValueError("set_residues: can only set all atoms to a single value or each atom to a distinct one "
@@ -2863,7 +2863,7 @@ class ResidueGroup(AtomGroup):
         # instances where they have different names
         attr = {'resname': 'name',
             'resid': 'id'}
-        for r, value in itertools.izip(self.residues, itertools.cycle(values)):
+        for r, value in zip(self.residues, itertools.cycle(values)):
             attrname = attr.get(name, name)
             if hasattr(r, attrname):  # should use __slots__ on Residue and try/except here
                 setattr(r, attrname, value)
@@ -3071,7 +3071,7 @@ class SegmentGroup(ResidueGroup):
         if len(values) == 1:
             self._set_atoms(name, values[0], **kwargs)
         elif len(values) == len(self.segments):
-            for s, value in itertools.izip(self.segments, values):
+            for s, value in zip(self.segments, values):
                 s._set_atoms(name, value, **kwargs)
         else:
             raise ValueError("set_segments: can only set all atoms to a single value or each atom to a distinct one "
@@ -3126,7 +3126,7 @@ class SegmentGroup(ResidueGroup):
         # This is a hack to be able to set properties on Segment/Atom
         # instances where they have different names
         #attr = {'segid': 'id'}
-        for seg, value in itertools.izip(self.segments, itertools.cycle(util.asiterable(segid))):
+        for seg, value in zip(self.segments, itertools.cycle(util.asiterable(segid))):
             setattr(seg, 'name', value)
 
     def __getattr__(self, attr):
@@ -3421,7 +3421,7 @@ class Universe(object):
         from MDAnalysis.topology.core import build_segments
 
         segments = build_segments(self.atoms)
-        for seg in segments.keys():
+        for seg in list(segments.keys()):
             if seg[0].isdigit():
                 newsegname = 's' + seg
                 segments[newsegname] = segments.pop(seg)
@@ -3575,7 +3575,7 @@ class Universe(object):
                 f.update(dict((a, f[a1]) for a in f[a2]))
 
                 # Lone atoms get their own fragment
-        f.update(dict((a, _fragset((a,))) for a, val in f.items() if not val))
+        f.update(dict((a, _fragset((a,))) for a, val in list(f.items()) if not val))
 
         # All the unique values in f are the fragments
         frags = tuple([AtomGroup(list(a.ats)) for a in set(f.values())])

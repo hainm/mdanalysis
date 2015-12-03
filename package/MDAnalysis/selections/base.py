@@ -59,7 +59,7 @@ def get_writer(filename, defaultformat):
         return MDAnalysis.selections._selection_writers[format]
     except KeyError:
         raise NotImplementedError("Writing as %r is not implemented; only %r will work."
-                                  % (format, MDAnalysis.selections._selection_writers.keys()))
+                                  % (format, list(MDAnalysis.selections._selection_writers.keys())))
 
 
 class SelectionWriter(object):
@@ -183,7 +183,7 @@ class SelectionWriter(object):
         step = self.numterms or len(selection.atoms)
         with open(self.filename, self._current_mode) as out:
             self._write_head(out, name=name)
-            for iatom in xrange(0, len(selection.atoms), step):
+            for iatom in range(0, len(selection.atoms), step):
                 line = selection_terms[iatom:iatom + step]
                 out.write(" ".join(line))
                 if len(line) == step and not iatom + step == len(selection.atoms):

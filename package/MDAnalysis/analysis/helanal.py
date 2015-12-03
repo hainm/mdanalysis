@@ -288,12 +288,12 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                     finish=finish, traj_time=trajectory.time))
 
     if start is not None and end is not None:
-        print "Analysing from residue", start, "to", end
+        print("Analysing from residue", start, "to", end)
     elif start is not None and end is None:
-        print "Analysing from residue", start, "to the C termini"
+        print("Analysing from residue", start, "to the C termini")
     elif start is None and end is not None:
-        print "Analysing from the N termini to", end
-    print "Analysing %d/%d residues" % (ca.numberOfAtoms(), universe.atoms.numberOfResidues())
+        print("Analysing from the N termini to", end)
+    print("Analysing %d/%d residues" % (ca.numberOfAtoms(), universe.atoms.numberOfResidues()))
 
     if not prefix is None:
         prefix = str(prefix)
@@ -358,31 +358,31 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
 
         #print out rotations across the helix to a file
         with open(twist_filename, "a") as twist_output:
-            print >> twist_output, frame,
+            print(frame, end=' ', file=twist_output)
             for loc_twist in twist:
-                print >> twist_output, loc_twist,
-            print >> twist_output, ""
+                print(loc_twist, end=' ', file=twist_output)
+            print("", file=twist_output)
 
         with open(bend_filename, "a") as bend_output:
-            print >> bend_output, frame,
+            print(frame, end=' ', file=bend_output)
             for loc_bend in bending_angles:
-                print >> bend_output, loc_bend,
-            print >> bend_output, ""
+                print(loc_bend, end=' ', file=bend_output)
+            print("", file=bend_output)
 
         with open(screw_filename, "a") as rot_output:
-            print >> rot_output, frame,
+            print(frame, end=' ', file=rot_output)
             for rotation in local_screw_angles:
-                print >> rot_output, rotation,
-            print >> rot_output, ""
+                print(rotation, end=' ', file=rot_output)
+            print("", file=rot_output)
 
         with open(tilt_filename, "a") as tilt_output:
-            print >> tilt_output, frame,
+            print(frame, end=' ', file=tilt_output)
             for tilt in local_helix_axes:
-                print >> tilt_output, rad2deg(vecangle(tilt, ref_axis)),
-            print >> tilt_output, ""
+                print(rad2deg(vecangle(tilt, ref_axis)), end=' ', file=tilt_output)
+            print("", file=tilt_output)
 
         with open(fitted_tilt_filename, "a") as tilt_output:
-            print >> tilt_output, frame, rad2deg(fit_tilt)
+            print(frame, rad2deg(fit_tilt), file=tilt_output)
 
         if len(global_bending) == 0:
             global_bending = [[] for item in bending_angles]
@@ -396,11 +396,11 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         frame += 1
         formated_frame = "%10d" % frame
 
-        print '\r', formated_time, ' ps', formated_frame,
+        print('\r', formated_time, ' ps', formated_frame, end=' ')
 
         sys.stdout.flush()
 
-    print '\nComplete'
+    print('\nComplete')
     twist_mean, twist_sd, twist_abdev = stats(global_twist)
     height_mean, height_sd, height_abdev = stats(global_height)
     rnou_mean, rnou_sd, rnou_abdev = stats(global_rnou)
@@ -411,75 +411,75 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
 
     bending_statistics_matrix = [[stats(col) for col in row] for row in global_bending_matrix]
     with open(matrix_filename, 'w') as mat_output:
-        print >> mat_output, "Mean"
+        print("Mean", file=mat_output)
         for row in bending_statistics_matrix:
             for col in row:
                 formatted_angle = "%6.1f" % col[0]
-                print >> mat_output, formatted_angle,
-            print >> mat_output, ''
+                print(formatted_angle, end=' ', file=mat_output)
+            print('', file=mat_output)
 
-        print >> mat_output, "\nSD"
+        print("\nSD", file=mat_output)
         for row in bending_statistics_matrix:
             for col in row:
                 formatted_angle = "%6.1f" % col[1]
-                print >> mat_output, formatted_angle,
-            print >> mat_output, ''
+                print(formatted_angle, end=' ', file=mat_output)
+            print('', file=mat_output)
 
-        print >> mat_output, "\nABDEV"
+        print("\nABDEV", file=mat_output)
         for row in bending_statistics_matrix:
             for col in row:
                 formatted_angle = "%6.1f" % col[2]
-                print >> mat_output, formatted_angle,
-            print >> mat_output, ''
+                print(formatted_angle, end=' ', file=mat_output)
+            print('', file=mat_output)
 
-    print "Height:", height_mean, "SD", height_sd, "ABDEV", height_abdev, '(Angstroem)'
-    print "Twist:", twist_mean, "SD", twist_sd, "ABDEV", twist_abdev
-    print "Residues/turn:", rnou_mean, "SD", rnou_sd, "ABDEV", rnou_abdev
-    print "Fitted tilt:", ftilt_mean, "SD", ftilt_sd, "ABDEV", ftilt_abdev
-    print "Local bending angles:"
-    residue_statistics = zip(*bending_statistics)
+    print("Height:", height_mean, "SD", height_sd, "ABDEV", height_abdev, '(Angstroem)')
+    print("Twist:", twist_mean, "SD", twist_sd, "ABDEV", twist_abdev)
+    print("Residues/turn:", rnou_mean, "SD", rnou_sd, "ABDEV", rnou_abdev)
+    print("Fitted tilt:", ftilt_mean, "SD", ftilt_sd, "ABDEV", ftilt_abdev)
+    print("Local bending angles:")
+    residue_statistics = list(zip(*bending_statistics))
     measure_names = ["Mean ", "SD   ", "ABDEV"]
-    print "ResID",
+    print("ResID", end=' ')
     if start is None:
         for item in range(4, len(residue_statistics[0]) + 4):
             output = "%8d" % item
-            print output,
+            print(output, end=' ')
     else:
         for item in range(start + 3, len(residue_statistics[0]) + start + 3):
             output = "%8d" % item
-            print output,
-    print ""
+            print(output, end=' ')
+    print("")
     for measure, name in zip(residue_statistics, measure_names):
-        print name,
+        print(name, end=' ')
         for residue in measure:
             output = "%8.1f" % residue
-            print output,
-        print ''
+            print(output, end=' ')
+        print('')
 
     with open(summary_filename, 'w') as summary_output:
-        print >> summary_output, "Height:", height_mean, "SD", height_sd, "ABDEV", height_abdev, '(nm)'
-        print >> summary_output, "Twist:", twist_mean, "SD", twist_sd, "ABDEV", twist_abdev
-        print >> summary_output, "Residues/turn:", rnou_mean, "SD", rnou_sd, "ABDEV", rnou_abdev
-        print >> summary_output, "Local bending angles:"
-        residue_statistics = zip(*bending_statistics)
+        print("Height:", height_mean, "SD", height_sd, "ABDEV", height_abdev, '(nm)', file=summary_output)
+        print("Twist:", twist_mean, "SD", twist_sd, "ABDEV", twist_abdev, file=summary_output)
+        print("Residues/turn:", rnou_mean, "SD", rnou_sd, "ABDEV", rnou_abdev, file=summary_output)
+        print("Local bending angles:", file=summary_output)
+        residue_statistics = list(zip(*bending_statistics))
         measure_names = ["Mean ", "SD   ", "ABDEV"]
-        print >> summary_output, "ResID",
+        print("ResID", end=' ', file=summary_output)
         if start is None:
             for item in range(4, len(residue_statistics[0]) + 4):
                 output = "%8d" % item
-                print >> summary_output, output,
+                print(output, end=' ', file=summary_output)
         else:
             for item in range(start + 3, len(residue_statistics[0]) + start + 3):
                 output = "%8d" % item
-                print >> summary_output, output,
-        print >> summary_output, ""
+                print(output, end=' ', file=summary_output)
+        print("", file=summary_output)
 
         for measure, name in zip(residue_statistics, measure_names):
-            print >> summary_output, name,
+            print(name, end=' ', file=summary_output)
             for residue in measure:
                 output = "%8.1f" % residue
-                print >> summary_output, output,
-            print >> summary_output, ''
+                print(output, end=' ', file=summary_output)
+            print('', file=summary_output)
 
 
 def tilt_correct(number):
@@ -536,7 +536,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
             end = universe.atoms[-1].resid
         selection += " and resid %(start)d:%(end)d" % vars()
     ca = universe.selectAtoms(selection)
-    print "Analysing %d/%d residues" % (ca.numberOfAtoms(), universe.atoms.numberOfResidues())
+    print("Analysing %d/%d residues" % (ca.numberOfAtoms(), universe.atoms.numberOfResidues()))
 
     twist, bending_angles, height, rnou, origins, local_helix_axes, local_screw_angles = \
         main_loop(ca.coordinates(), ref_axis=ref_axis)
@@ -582,27 +582,27 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     abdev_height = mean_abs_dev(height, mean_height)
     #TESTED- average rises
 
-    print "Height:", mean_height, sd_height, abdev_height
-    print "Twist:", mean_twist, sd_twist, abdev_twist
-    print "Residues/turn:", mean_rnou, sd_rnou, abdev_rnou
+    print("Height:", mean_height, sd_height, abdev_height)
+    print("Twist:", mean_twist, sd_twist, abdev_twist)
+    print("Residues/turn:", mean_rnou, sd_rnou, abdev_rnou)
     #print mean_height, sd_height, abdev_height
-    print "Local bending angles:"
+    print("Local bending angles:")
     for angle in bending_angles:
         output = "%8.1f\t" % angle
-        print output,
-    print ''
-    print "Unit twist angles:"
+        print(output, end=' ')
+    print('')
+    print("Unit twist angles:")
     for twist_ang in twist:
         outputtwist = "%8.1f\t" % twist_ang
-        print outputtwist,
-    print ''
+        print(outputtwist, end=' ')
+    print('')
 
     #calculate best fit vector and tilt of said vector
     fit_vector, fit_tilt = vector_of_best_fit(origins)
-    print "Best fit tilt =", fit_tilt
-    print "Rotation Angles from 1 to n-1"
+    print("Best fit tilt =", fit_tilt)
+    print("Rotation Angles from 1 to n-1")
     for item in local_screw_angles:
-        print round(item, 1),
+        print(round(item, 1), end=' ')
 
 
 def origin_pdb(origins, pdbfile):
@@ -615,9 +615,9 @@ def origin_pdb(origins, pdbfile):
         i = 1
         for xyz in origins:
             tmp = "ATOM    %3d  CA  ALA   %3d    %8.3f%8.3f%8.3f  1.00  0.00" % (i, i, xyz[0], xyz[1], xyz[2])
-            print >> output, tmp
+            print(tmp, file=output)
             i += 1
-        print >> output, "TER\nENDMDL"
+        print("TER\nENDMDL", file=output)
 
 
 def main_loop(positions, ref_axis=None):
@@ -633,7 +633,7 @@ def main_loop(positions, ref_axis=None):
     origins = [[0., 0., 0.] for item in positions[:-2]]
     local_helix_axes = []
     location_rotation_vectors = []
-    for i in xrange(len(positions) - 3):
+    for i in range(len(positions) - 3):
         vec12 = positions[i + 1] - positions[i]
         vec23 = positions[i + 2] - positions[i + 1]
         vec34 = positions[i + 3] - positions[i + 2]
@@ -689,7 +689,7 @@ def main_loop(positions, ref_axis=None):
     #local bending angles (eg i > i+3, i+3 > i+6)
 
     bending_angles = [0 for item in range(len(local_helix_axes) - 3)]
-    for axis in xrange(len(local_helix_axes) - 3):
+    for axis in range(len(local_helix_axes) - 3):
         angle = numpy.arccos(vecscaler(local_helix_axes[axis], local_helix_axes[axis + 3]))
         bending_angles[axis] = rad2deg(angle)
         #TESTED- angles are correct
@@ -725,11 +725,11 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
         elif screw_angle > 3 * numpy.pi / 4 and alt_screw_angle > numpy.pi / 2:
             screw_angle = 3 * numpy.pi / 2 - alt_screw_angle
         else:
-            print "\nBig Screw Up"
+            print("\nBig Screw Up")
 
     if veclength(updown) == 0:
         #vector is at 0 or 180
-        print "\nPROBLEM (vector is at 0 or 180)"
+        print("\nPROBLEM (vector is at 0 or 180)")
 
     helix_dot_rehelix = vecangle(updown, helix_vector)
 

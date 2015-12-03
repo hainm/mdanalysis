@@ -126,4 +126,4 @@ class InteractionKind(object):
 
             # but currently only [atom1, atom2, ...] is interested
             atom_ndx.pop(0)
-            yield [atom_ndx.pop(0) for i in xrange(self.natoms)]
+            yield [atom_ndx.pop(0) for i in range(self.natoms)]

@@ -72,7 +72,7 @@ Reads coordinates, velocities and more (see attributes of the
    :members:
 """
 
-from sys import maxint
+from sys import maxsize
 import warnings
 import numpy as np
 import os
@@ -308,7 +308,7 @@ class TRZReader(base.Reader):
             return self._dt
         try:
             t0 = self.ts.time
-            self.next()
+            next(self)
             t1 = self.ts.time
             self._dt = t1 - t0
         except IOError:
@@ -332,7 +332,7 @@ class TRZReader(base.Reader):
             return self._skip_timestep
         try:
             t0 = self.ts.step
-            self.next()
+            next(self)
             t1 = self.ts.step
             self._skip_timestep = t1 - t0
         except IOError:
@@ -347,7 +347,7 @@ class TRZReader(base.Reader):
         move = frame - (self.ts.frame - 1)  # difference from current frame to desired frame
         if move is not 0:
             self._seek(move - 1)
-            self.next()
+            next(self)
         return self.ts
 
     def _seek(self, nframes):
@@ -360,14 +360,14 @@ class TRZReader(base.Reader):
         if (np.dtype(type(nframes)) != np.dtype(int)):
             raise ValueError("TRZfile seek requires an integer number of frames got %r" % type(nframes))
 
-        maxi_l = long(maxint)
+        maxi_l = int(maxint)
 
-        framesize = long(self._dtype.itemsize)
+        framesize = int(self._dtype.itemsize)
         seeksize = framesize * nframes
 
         if seeksize > maxi_l:
             # Workaround for seek not liking long ints
-            framesize = long(framesize)
+            framesize = int(framesize)
             seeksize = framesize * nframes
 
             nreps = int(seeksize / maxi_l)  # number of max seeks we'll have to do

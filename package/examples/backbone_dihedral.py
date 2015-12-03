@@ -32,7 +32,7 @@ numresidues = protein.numberOfResidues()
 
 collection.clear()
 for res in range(2, numresidues - 1):
-    print "Processing residue %d" % res
+    print("Processing residue %d" % res)
     # selection of the atoms involved for the phi for resid '%d' %res
     ## selectAtoms("atom 4AKE %d C"%(res-1), "atom 4AKE %d N"%res, "atom %d 4AKE CA"%res, "atom 4AKE %d C" % res)
     phi_sel = universe.residues[res].phi_selection()
@@ -72,7 +72,7 @@ if have_matplotlib:
     ylabel(r"dihedral in degrees")
     savefig("./figures/backbone_dihedrals_residue.pdf")
     savefig("./figures/backbone_dihedrals_residue.png")
-    print "Figures saved as ./figures/backbone_dihedrals_residue.{pdf,png}"
+    print("Figures saved as ./figures/backbone_dihedrals_residue.{pdf,png}")
 
     # Ramachandran plot
     clf()
@@ -87,4 +87,4 @@ if have_matplotlib:
 
     savefig("./figures/backbone_dihedrals_ramachandran.pdf")
     savefig("./figures/backbone_dihedrals_ramachandran.png")
-    print "Figures saved as ./figures/backbone_dihedrals_ramachandran.{pdf,png}"
+    print("Figures saved as ./figures/backbone_dihedrals_ramachandran.{pdf,png}")

@@ -142,7 +142,7 @@ Examples
 import numpy
 from numpy import exp
 import warnings
-from itertools import izip
+
 
 from MDAnalysis.core.log import ProgressMeter
 from MDAnalysis.core.distances import distance_array, calc_angles, calc_bonds
@@ -294,7 +294,7 @@ class HydrogenBondAutoCorrel(object):
                            format="Performing run %(step)5d/%(numsteps)d"
                                   "[%(percentage)5.1f%%]\r")
 
-        for i, (start, stop) in enumerate(izip(self._starts, self._stops)):
+        for i, (start, stop) in enumerate(zip(self._starts, self._stops)):
             pm.echo(i + 1)
 
             # needed else trj seek thinks a numpy.int64 isn't an int?

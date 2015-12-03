@@ -116,22 +116,22 @@ if __name__ == "__main__":
     u = MDAnalysis.Universe(options.topology, structure)
 
     if options.optimize:
-        print "# Finding best cutoff (--optimize)..."
+        print("# Finding best cutoff (--optimize)...")
         try:
             cutoff, N = optimize_cutoff(u, options.selection, pbc=options.pbc,
                                         max_imbalance=options.max_imbalance)
         except:
             raise RuntimeError("Failed cutoff optimization, try without --optimize")
-        print "# Optimized cutoff=%(cutoff).1f A, finding %(N)d disconnected groups" % vars()
+        print("# Optimized cutoff=%(cutoff).1f A, finding %(N)d disconnected groups" % vars())
     else:
         cutoff = options.cutoff
-        print "# Using fixed cutoff=%(cutoff).1f A" % vars()
+        print("# Using fixed cutoff=%(cutoff).1f A" % vars())
 
     LF = LeafletFinder(u, options.selection, cutoff=cutoff, pbc=options.pbc)
     p = get_membrane_parameters(u, LF)
 
     # show results
-    print "#" + 60 * "="
-    print "thickness tmem = %(thickness).2f A" % p
-    print "center    zmem = %(zmem).2f A" % p
-    print "#" + 60 * "="
+    print("#" + 60 * "=")
+    print("thickness tmem = %(thickness).2f A" % p)
+    print("center    zmem = %(zmem).2f A" % p)
+    print("#" + 60 * "=")

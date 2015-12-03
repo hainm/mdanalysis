@@ -16,7 +16,7 @@ Profiling shows that the computational bottleneck is the
 :func:`numpy.histogram` function.
 """
 
-from itertools import izip
+
 
 import numpy
 
@@ -57,11 +57,11 @@ rdf = rdf.astype(numpy.float64)  # avoid possible problems with '/' later on
 n = solvent.numberOfAtoms()
 dist = numpy.zeros((n * (n - 1) / 2,), dtype=numpy.float64)
 
-print "Start: n = %d, size of dist = %d " % (n, len(dist))
+print("Start: n = %d, size of dist = %d " % (n, len(dist)))
 
 boxvolume = 0
 for ts in universe.trajectory:
-    print "Frame %4d" % ts.frame
+    print("Frame %4d" % ts.frame)
     boxvolume += ts.volume  # correct unitcell volume
     coor = solvent.coordinates()
     # periodicity is NOT handled correctly in this example because
@@ -72,7 +72,7 @@ for ts in universe.trajectory:
     self_distance_array(coor, box, result=dist)  # use pre-allocated array, box not fully correct!!
     new_rdf, edges = numpy.histogram(dist, bins=nbins, range=(dmin, dmax))
     rdf += new_rdf
-print
+print()
 
 numframes = universe.trajectory.numframes / universe.trajectory.skip
 boxvolume /= numframes  # average volume
@@ -91,9 +91,9 @@ rdf /= norm * vol
 
 outfile = './output/rdf.dat'
 with open(outfile, 'w') as output:
-    for radius, gofr in izip(radii, rdf):
+    for radius, gofr in zip(radii, rdf):
         output.write("%(radius)8.3f \t %(gofr)8.3f\n" % vars())
-print "g(r) data written to %(outfile)r" % vars()
+print("g(r) data written to %(outfile)r" % vars())
 
 if have_matplotlib:
     matplotlib.rc('font', size=14)
@@ -104,4 +104,4 @@ if have_matplotlib:
     pylab.ylabel(r"radial distribution function $g(r)$")
     pylab.savefig("./figures/rdf.pdf")
     pylab.savefig("./figures/rdf.png")
-    print "Figure written to ./figures/rdf.{pdf,png}"
+    print("Figure written to ./figures/rdf.{pdf,png}")

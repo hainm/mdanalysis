@@ -87,13 +87,13 @@ import sys
 import os
 import os.path
 import errno
-import cPickle
+import pickle
 import warnings
 
 try:
     from gridData import Grid  # http://github.com/orbeckst/GridDataFormats
 except ImportError:
-    print """ERROR --- The GridDataFormats package can not be found!
+    print("""ERROR --- The GridDataFormats package can not be found!
 
 The 'gridData' module from GridDataFormats could not be
 imported. Please install it first.  You can try installing with
@@ -106,7 +106,7 @@ Alternatively, download the package from
     http://pypi.python.org/pypi/GridDataFormats/
 
 and install in the usual manner.
-"""
+""")
     raise
 
 import MDAnalysis
@@ -260,7 +260,7 @@ class Density(Grid):
         """
         # all this unit crap should be a class...
         try:
-            for unit_type, value in u.items():
+            for unit_type, value in list(u.items()):
                 if value is None:  # check here, too iffy to use dictionary[None]=None
                     self.units[unit_type] = None
                     continue
@@ -298,9 +298,9 @@ class Density(Grid):
             warnings.warn(msg)
             return
 
-        dedges = map(numpy.diff, self.edges)
+        dedges = list(map(numpy.diff, self.edges))
         D = len(self.edges)
-        for i in xrange(D):
+        for i in range(D):
             shape = numpy.ones(D, int)
             shape[i] = len(dedges[i])
             self.grid /= dedges[i].reshape(shape)
@@ -366,7 +366,7 @@ class Density(Grid):
             self.grid *= MDAnalysis.core.units.get_conversion_factor('density', self.units['density'], unit)
         except KeyError:
             raise ValueError("The name of the unit (%r supplied) must be one of:\n%r" %
-                             (unit, MDAnalysis.core.units.conversion_factor['density'].keys()))
+                             (unit, list(MDAnalysis.core.units.conversion_factor['density'].keys())))
         self.units['density'] = unit
 
     def __repr__(self):
@@ -495,7 +495,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     smax = numpy.max(coord, axis=0) + padding
 
     BINS = fixedwidth_bins(delta, smin, smax)
-    arange = zip(BINS['min'], BINS['max'])
+    arange = list(zip(BINS['min'], BINS['max']))
     bins = BINS['Nbins']
 
     # create empty grid with the right dimensions (and get the edges)
@@ -504,14 +504,14 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     h = grid.copy()
 
     for ts in u.trajectory:
-        print "Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
-              (len(coord), ts.frame, u.trajectory.numframes, 100.0 * ts.frame / u.trajectory.numframes),
+        print("Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
+              (len(coord), ts.frame, u.trajectory.numframes, 100.0 * ts.frame / u.trajectory.numframes), end=' ')
         coord = current_coordinates()
         if len(coord) == 0:
             continue
         h[:], edges[:] = numpy.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
-    print
+    print()
     numframes = u.trajectory.numframes / u.trajectory.skip
     grid /= float(numframes)
 
@@ -754,15 +754,15 @@ class BfactorDensityCreator(object):
         smax = numpy.max(coord, axis=0) + padding
 
         BINS = fixedwidth_bins(delta, smin, smax)
-        arange = zip(BINS['min'], BINS['max'])
+        arange = list(zip(BINS['min'], BINS['max']))
         bins = BINS['Nbins']
 
         # get edges by doing a fake run
         grid, self.edges = numpy.histogramdd(numpy.zeros((1, 3)),
                                              bins=bins, range=arange, normed=False)
-        self.delta = numpy.diag(map(lambda e: (e[-1] - e[0]) / (len(e) - 1), self.edges))
-        self.midpoints = map(lambda e: 0.5 * (e[:-1] + e[1:]), self.edges)
-        self.origin = map(lambda m: m[0], self.midpoints)
+        self.delta = numpy.diag([(e[-1] - e[0]) / (len(e) - 1) for e in self.edges])
+        self.midpoints = [0.5 * (e[:-1] + e[1:]) for e in self.edges]
+        self.origin = [m[0] for m in self.midpoints]
         numframes = 1
 
         if sigma is None:
@@ -811,11 +811,11 @@ class BfactorDensityCreator(object):
         # rho_smeared = F^-1[ F[g]*F[rho] ]
         g = numpy.zeros(grid.shape)  # holds the smeared out density
         pos = numpy.where(grid != 0)  # position in histogram (as bin numbers)
-        for iwat in xrange(len(pos[0])):  # super-ugly loop
+        for iwat in range(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
             g += grid[p] * numpy.fromfunction(self._gaussian, grid.shape, dtype=numpy.int, p=p, sigma=sigma)
-            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
-                  (iwat + 1, len(pos[0]), sigma),
+            print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
+                  (iwat + 1, len(pos[0]), sigma), end=' ')
         return g
 
     def _smear_rmsf(self, coordinates, grid, edges, rmsf):
@@ -828,8 +828,8 @@ class BfactorDensityCreator(object):
                 continue
             g += numpy.fromfunction(self._gaussian_cartesian, grid.shape, dtype=numpy.int,
                                     c=coord, sigma=rmsf[iwat])
-            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
-                  (iwat + 1, N, rmsf[iwat]),
+            print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
+                  (iwat + 1, N, rmsf[iwat]), end=' ')
         return g
 
     def _gaussian(self, i, j, k, p, sigma):

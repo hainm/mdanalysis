@@ -35,7 +35,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+
 
 from ..core.AtomGroup import Atom
 from .core import guess_atom_type, guess_atom_mass

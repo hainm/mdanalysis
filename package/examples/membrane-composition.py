@@ -80,38 +80,38 @@ if __name__ == "__main__":
     u = MDAnalysis.Universe(options.topology, structure)
 
     if options.optimize:
-        print "# Finding best cutoff (--optimize)..."
+        print("# Finding best cutoff (--optimize)...")
         try:
             cutoff, N = optimize_cutoff(u, options.selection, pbc=options.pbc,
                                         max_imbalance=options.max_imbalance)
         except:
             raise RuntimeError("Failed cutoff optimization, try without --optimize")
-        print "# Optimized cutoff=%(cutoff).1f A, finding %(N)d disconnected groups" % vars()
+        print("# Optimized cutoff=%(cutoff).1f A, finding %(N)d disconnected groups" % vars())
     else:
         cutoff = options.cutoff
-        print "# Using fixed cutoff=%(cutoff).1f A" % vars()
+        print("# Using fixed cutoff=%(cutoff).1f A" % vars())
 
     LF = LeafletFinder(u, options.selection, cutoff=cutoff, pbc=options.pbc)
 
-    print "# group sizes = %r " % LF.sizes()
+    print("# group sizes = %r " % LF.sizes())
 
     # two leaflets
     def print_line(symbol="-"):
-        print "#" + (12 + 5) * symbol
+        print("#" + (12 + 5) * symbol)
 
     print_line("=")
-    print "#%2s  %5s  %6s" % ("ll", "resn", "count")
+    print("#%2s  %5s  %6s" % ("ll", "resn", "count"))
     print_line("=")
 
-    for groupindex in xrange(len(LF.components)):
+    for groupindex in range(len(LF.components)):
         resnames = [a.resname for a in LF.groups(groupindex)]
         # there CERTAINLY is a better way to count occurrences than this...
         keys = numpy.unique(resnames)
         for k in keys:
             count = resnames.count(k)
-            print " %2d  %5s  %6d" % (groupindex, k, count)
+            print(" %2d  %5s  %6d" % (groupindex, k, count))
         total = LF.sizes()[groupindex]
         if total > 1:
             print_line()
-            print "#%2d  %5s  %6d" % (groupindex, '', total)
-        print
+            print("#%2d  %5s  %6d" % (groupindex, '', total))
+        print()

@@ -107,7 +107,7 @@ def backup_file(filename):
                     failure = False
                     break
         if failure:
-            print "Too many backups. Clean up and try again"
+            print("Too many backups. Clean up and try again")
             exit()
 
 
@@ -117,7 +117,7 @@ def generate_grid(positions, cutoff):
     This way, for each particle you only need to search the neighbouring boxes to find the particles within the cutoff
     Observed a 6x speed up for a smallish protein with ~300 residues; this should get better with bigger systems.
     '''
-    [x, y, z] = zip(*positions)
+    [x, y, z] = list(zip(*positions))
     high_x = max(x)
     high_y = max(y)
     high_z = max(z)
@@ -189,7 +189,7 @@ class GNMAnalysis(object):
         if ReportVector:
             with open(ReportVector, "a") as oup:
                 for item in enumerate(v[list_map[1]]):
-                    print >> oup, "", counter, time, item[0] + 1, w[list_map[1]], item[1]
+                    print("", counter, time, item[0] + 1, w[list_map[1]], item[1], file=oup)
         outputobject.append((time, w[list_map[1]], v[list_map[1]]))
         #outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ], [ v[list_map[i]] for i in range(
         # nmodes) ] ))
@@ -282,7 +282,7 @@ class GNMAnalysis(object):
             try:
                 [u, w, v] = linalg.svd(matrix)
             except:
-                print "\nFrame skip at", timestep, "(SVD failed to converge). Cutoff", self.cutoff
+                print("\nFrame skip at", timestep, "(SVD failed to converge). Cutoff", self.cutoff)
                 continue
             #Save the results somewhere useful in some useful format. Usefully.
             self.generate_output(w, v, self.results, timestep, matrix, ReportVector=self.ReportVector, counter=counter)

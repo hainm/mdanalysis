@@ -20,7 +20,7 @@ import MDAnalysis
 def blocked(universe, nblocks, analyze):
     size = universe.trajectory.numframes / nblocks
     blocks = []
-    for block in xrange(nblocks):
+    for block in range(nblocks):
         a = []
         for ts in u.trajectory[block * size:(block + 1) * size]:
             a.append(analyze(universe))
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     u = MDAnalysis.Universe(PSF, DCD)
     results = []
-    for nblocks in xrange(2, 10):
+    for nblocks in range(2, 10):
         results.append(blocked(u, nblocks, rgyr))
     r = numpy.array(results)
 
@@ -68,4 +68,4 @@ if __name__ == "__main__":
         savefig("./figures/blocks.pdf")
         savefig("./figures/blocks.png")
 
-        print "Wrote ./figures/blocks.{pdf,png}" % vars()
+        print("Wrote ./figures/blocks.{pdf,png}" % vars())

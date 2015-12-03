@@ -67,7 +67,7 @@ tpx_generation = 24  # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c
     F_ETOT, F_ECONSERVED, F_TEMP, F_VTEMP_NOLONGERUSED,
     F_PDISPCORR, F_PRES, F_DHDL_CON, F_DVDL,
     F_DKDL, F_DVDL_COUL, F_DVDL_VDW, F_DVDL_BONDED,
-    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = range(87)
+    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = list(range(87))
 
 #: Function types from ``<gromacs_dir>/src/gmxlib/tpxio.c``
 ftupd = [

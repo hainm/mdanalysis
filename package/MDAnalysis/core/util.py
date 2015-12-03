@@ -170,7 +170,7 @@ import numpy
 
 # Python 3.0, 3.1 do not have the builtin callable()
 try:
-    callable(list)
+    isinstance(list, collections.Callable)
 except NameError:
     # http://bugs.python.org/issue10518
     import collections
@@ -300,7 +300,7 @@ def anyopen(datasource, mode='r', reset=True):
                     stream.reset()
                 except (AttributeError, IOError):
                     try:
-                        stream.seek(0L)
+                        stream.seek(0)
                     except (AttributeError, IOError):
                         warnings.warn("Stream {0}: not guaranteed to be at the beginning."
                                       "".format(filename),
@@ -379,7 +379,7 @@ def greedy_splitext(p):
 
 def hasmethod(obj, m):
     """Return ``True`` if object *obj* contains the method *m*."""
-    return hasattr(obj, m) and callable(getattr(obj, m))
+    return hasattr(obj, m) and isinstance(getattr(obj, m), collections.Callable)
 
 
 def isstream(obj):
@@ -442,7 +442,7 @@ def which(program):
     return None
 
 
-class NamedStream(io.IOBase, basestring):
+class NamedStream(io.IOBase, str):
     """Stream that also provides a (fake) name.
 
     By wrapping a stream *stream* in this class, it can be passed to
@@ -542,7 +542,7 @@ class NamedStream(io.IOBase, basestring):
             self.stream.reset()  # e.g. StreamIO
         except (AttributeError, IOError):
             try:
-                self.stream.seek(0L)  # typical file objects
+                self.stream.seek(0)  # typical file objects
             except (AttributeError, IOError):
                 warnings.warn("NamedStream {0}: not guaranteed to be at the beginning."
                               "".format(self.name),
@@ -749,7 +749,7 @@ def realpath(*args):
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
-    if isinstance(obj, basestring):
+    if isinstance(obj, str):
         return False  # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):
@@ -1037,7 +1037,7 @@ canonical_inverse_aa_codes = {
     'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'}
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = dict([(one, three) for three, one in canonical_inverse_aa_codes.items()])
+amino_acid_codes = dict([(one, three) for three, one in list(canonical_inverse_aa_codes.items())])
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)
 alternative_inverse_aa_codes = {

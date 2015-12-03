@@ -199,7 +199,7 @@ References
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
-    import pdb.extensions
+    from . import pdb
     # disable PDBConstructionWarning from picky builder
     import warnings
 
@@ -479,8 +479,8 @@ class PrimitivePDBReader(base.Reader):
                 if record == 'END':
                     break
                 elif record == 'CRYST1':
-                    A, B, C = map(float, [line[6:15], line[15:24], line[24:33]])
-                    alpha, beta, gamma = map(float, [line[33:40], line[40:47], line[47:54]])
+                    A, B, C = list(map(float, [line[6:15], line[15:24], line[24:33]]))
+                    alpha, beta, gamma = list(map(float, [line[33:40], line[40:47], line[47:54]]))
                     self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
                     continue
                 elif record == 'HEADER':
@@ -501,7 +501,7 @@ class PrimitivePDBReader(base.Reader):
                     # on the trajectory reader
                     if len(frames) > 1:
                         continue
-                    self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
+                    self.ts._pos[pos] = list(map(float, [line[30:38], line[38:46], line[46:54]]))
                     pos += 1
                     occupancy = float(line[54:60])
                     self._occupancy.append(occupancy)
@@ -588,21 +588,21 @@ class PrimitivePDBReader(base.Reader):
         pos = 0
         self._occupancy = []
         with util.openany(self.filename, 'r') as f:
-            for i in xrange(line):
-                f.next()  # forward to frame
+            for i in range(line):
+                next(f)  # forward to frame
             for line in f:
                 if line[:6] == 'ENDMDL':
                     break
                 # NOTE - CRYST1 line won't be found if it comes before the MODEL line,
                 # which is sometimes the case, e.g. output from gromacs trjconv
                 elif line[:6] == 'CRYST1':
-                    A, B, C = map(float, [line[6:15], line[15:24], line[24:33]])
-                    alpha, beta, gamma = map(float, [line[33:40], line[40:47], line[47:54]])
+                    A, B, C = list(map(float, [line[6:15], line[15:24], line[24:33]]))
+                    alpha, beta, gamma = list(map(float, [line[33:40], line[40:47], line[47:54]]))
                     self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
                     continue
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # we only care about coordinates
-                    self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
+                    self.ts._pos[pos] = list(map(float, [line[30:38], line[38:46], line[46:54]]))
                     pos += 1
                     # TODO import bfactors - might these change?
                     occupancy = float(line[54:60])
@@ -998,7 +998,7 @@ class PrimitivePDBWriter(base.Writer):
         if not start and traj.numframes > 1:
             start = traj.frame - 1
 
-        for framenumber in xrange(start, len(traj), step):
+        for framenumber in range(start, len(traj), step):
             traj[framenumber]
             self.write_next_timestep(self.ts, multiframe=True)
 

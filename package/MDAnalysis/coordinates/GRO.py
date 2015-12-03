@@ -113,7 +113,7 @@ class GROReader(base.SingleFrameReader):
                                 float(line[20 + (cs * 5):20 + (cs * 6)]))))
                 # Unit cell footer
                 elif linenum == total_atnums + 2:
-                    unitcell = np.array(map(float, line.split()))
+                    unitcell = np.array(list(map(float, line.split())))
 
         self.numatoms = len(coords_list)
 

@@ -46,7 +46,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+
 
 from ..core.AtomGroup import Atom
 from .core import get_atom_mass, guess_atom_element
@@ -146,7 +146,7 @@ class PrimitivePDBParser(TopologyReader):
             lines = (line[6:].split() for line in f
                      if line[:6] == "CONECT")
             for bond in lines:
-                atom, atoms = int(bond[0]), map(int, bond[1:])
+                atom, atoms = int(bond[0]), list(map(int, bond[1:]))
                 for a in atoms:
                     bond = tuple([mapping[atom], mapping[a]])
                     bonds.add(bond)

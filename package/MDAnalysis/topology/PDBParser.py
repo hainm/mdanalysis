@@ -37,7 +37,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+
 
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
