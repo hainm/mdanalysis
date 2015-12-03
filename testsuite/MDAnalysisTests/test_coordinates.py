@@ -22,7 +22,7 @@ from MDAnalysis import NoDataError
 from MDAnalysis.coordinates.base import Timestep
 
 import numpy as np
-import cPickle
+import pickle
 from numpy.testing import *
 from nose.plugins.attrib import attr
 import warnings
@@ -256,7 +256,7 @@ class TestXYZWriter(TestCase, Ref2r9r):
         uw = mda.Universe(XYZ_psf, self.outfile)
         assert_equal(self.universe.trajectory.numframes, uw.trajectory.numframes)
         # check that the trajectories are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between original and written trajectory at frame "
                                               "%d (orig) vs %d (written)" % (
@@ -365,8 +365,8 @@ class _TRJReaderTest(TestCase):
 
     def test_rewind(self):
         trj = self.universe.trajectory
-        trj.next()
-        trj.next()  # for readers that do not support indexing
+        next(trj)
+        next(trj)  # for readers that do not support indexing
         assert_equal(trj.ts.frame, 3, "failed to forward to frame 3 (frameindex 2)")
         trj.rewind()
         assert_equal(trj.ts.frame, 1, "failed to rewind to first frame")
@@ -519,7 +519,7 @@ class TestNCDFWriter(TestCase, RefVGV):
         uw = mda.Universe(PRMncdf, self.outfile)
 
         # check that the trajectories are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between original and written trajectory at frame "
                                               "%d (orig) vs %d (written)" % (
@@ -540,7 +540,7 @@ class TestNCDFWriter(TestCase, RefVGV):
 
         uw = MDAnalysis.Universe(GRO, self.outfile)
 
-        for orig_ts, written_ts in itertools.izip(trr.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(trr.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between original and written trajectory at frame "
                                               "%d (orig) vs %d (written)" % (
@@ -568,7 +568,7 @@ class TestNCDFWriter(TestCase, RefVGV):
         uw = MDAnalysis.Universe(self.outtop, self.outfile)
         pw = uw.atoms
 
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(p.positions, pw.positions, self.prec,
                                       err_msg="coordinate mismatch between original and written trajectory at frame "
                                               "%d (orig) vs %d (written)" % (
@@ -588,7 +588,7 @@ class TestINPCRDReader(TestCase):
                         [8.3254058, 6.2227613, -8.7098593],
                         [7.0833200, 5.5038197, -9.8417650],
                         [7.1129439, 4.6170351, -7.9729560]])
-        for ref, val in itertools.izip(ref_pos, ts._pos):
+        for ref, val in zip(ref_pos, ts._pos):
             assert_allclose(ref, val)
     
     def test_reader(self):
@@ -651,7 +651,7 @@ class TestNCDFWriterVelsForces(TestCase):
             w.write(self.ts2)
 
         u = MDAnalysis.Universe(self.top, self.outfile)
-        for ts, ref_ts in itertools.izip(u.trajectory, [self.ts1, self.ts2]):
+        for ts, ref_ts in zip(u.trajectory, [self.ts1, self.ts2]):
             if pos:
                 assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
             else:
@@ -938,7 +938,7 @@ class TestGMSReader(TestCase):
         pp = (u.trajectory.ts._pos[0] - u.trajectory.ts._pos[3])
         z1 = np.sqrt(sum(pp**2))
         for i in range(5):
-            u.trajectory.next()
+            next(u.trajectory)
         pp = (u.trajectory.ts._pos[0] - u.trajectory.ts._pos[3])
         z2 = np.sqrt(sum(pp**2))
         return z1-z2
@@ -1101,7 +1101,7 @@ class TestMultiPDBReader(TestCase):
 
         conect = helper(self.multiverse.atoms, [b for b in u.bonds if not b.is_guessed])
         for r in conect:
-            print r
+            print(r)
         assert_equal(conect, desired,
                      err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d "
                              "" % (
@@ -1582,7 +1582,7 @@ class TestDCDReader(_TestDCD):
 
     def test_next_dcd(self):
         self.dcd.rewind()
-        self.dcd.next()
+        next(self.dcd)
         assert_equal(self.ts.frame, 2, "loading frame 2")
 
     def test_jump_dcd(self):
@@ -1599,7 +1599,7 @@ class TestDCDReader(_TestDCD):
 
     def test_reverse_dcd(self):
         frames = [ts.frame for ts in self.dcd[20:5:-1]]
-        assert_equal(frames, range(21, 6, -1), "reversing dcd [20:5:-1]")
+        assert_equal(frames, list(range(21, 6, -1)), "reversing dcd [20:5:-1]")
 
     def test_numatoms(self):
         assert_equal(self.universe.trajectory.numatoms, 3341, "wrong number of atoms")
@@ -1660,7 +1660,7 @@ class TestDCDWriter(TestCase):
         uw = mda.Universe(PSF, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame "
                                               "%d (orig) vs %d (written)" % (
@@ -1689,7 +1689,7 @@ class TestDCDWriter(TestCase):
         uw = mda.Universe(PSF, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame "
                                               "%d (orig) vs %d (written)" % (
@@ -1820,7 +1820,7 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
     @attr('issue')
     def test_read_triclinic(self):
         """test reading of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
-        for ts, box in itertools.izip(self.u.trajectory, self.ref_dimensions[:, 1:]):
+        for ts, box in zip(self.u.trajectory, self.ref_dimensions[:, 1:]):
             assert_array_almost_equal(ts.dimensions, box, 4,
                                       err_msg="box dimensions A,B,C,alpha,beta,gamma not identical at frame {0}".format(ts.frame))
     @attr('issue')
@@ -1830,7 +1830,7 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
             for ts in self.u.trajectory:
                 w.write(ts)
         w = MDAnalysis.Universe(self.topology, self.dcd)
-        for ts_orig, ts_copy in itertools.izip(self.u.trajectory, w.trajectory):
+        for ts_orig, ts_copy in zip(self.u.trajectory, w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
                                 err_msg="DCD->DCD: unit cell dimensions wrong at frame {0}".format(ts_orig.frame))
         del w
@@ -1865,12 +1865,12 @@ class TestNCDF2DCD(TestCase):
     @attr('issue')
     def test_unitcell(self):
         """NCDFReader: Test that DCDWriter correctly writes the CHARMM unit cell"""
-        for ts_orig, ts_copy in itertools.izip(self.u.trajectory, self.w.trajectory):
+        for ts_orig, ts_copy in zip(self.u.trajectory, self.w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 3,
                                 err_msg="NCDF->DCD: unit cell dimensions wrong at frame %d" % ts_orig.frame)
 
     def test_coordinates(self):
-        for ts_orig, ts_copy in itertools.izip(self.u.trajectory, self.w.trajectory):
+        for ts_orig, ts_copy in zip(self.u.trajectory, self.w.trajectory):
             assert_almost_equal(self.u.atoms.positions, self.w.atoms.positions, 3,
                                 err_msg="NCDF->DCD: coordinates wrong at frame %d" % ts_orig.frame)
 
@@ -2016,7 +2016,7 @@ class TestChainReader(TestCase):
 
     def test_next_trajectory(self):
         self.trajectory.rewind()
-        self.trajectory.next()
+        next(self.trajectory)
         assert_equal(self.trajectory.ts.frame, 2, "loading frame 2")
 
     def test_numatoms(self):
@@ -2034,7 +2034,7 @@ class TestChainReader(TestCase):
 
     def test_jump_lastframe_trajectory(self):
         self.trajectory[-1]
-        print self.trajectory.ts, self.trajectory.ts.frame
+        print(self.trajectory.ts, self.trajectory.ts.frame)
         assert_equal(self.trajectory.ts.frame, self.trajectory.numframes, "indexing last frame with trajectory[-1]")
 
     def test_slice_trajectory(self):
@@ -2074,7 +2074,7 @@ class TestChainReader(TestCase):
         W.close()
         self.universe.trajectory.rewind()
         u = MDAnalysis.Universe(PSF, self.outfile)
-        for (ts_orig, ts_new) in itertools.izip(self.universe.trajectory, u.trajectory):
+        for (ts_orig, ts_new) in zip(self.universe.trajectory, u.trajectory):
             assert_almost_equal(ts_orig._pos, ts_new._pos, self.prec,
                                 err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
 
@@ -2176,7 +2176,7 @@ class _GromacsReader(TestCase):
     @dec.slow
     def test_next_xdrtrj(self):
         self.trajectory.rewind()
-        self.trajectory.next()
+        next(self.trajectory)
         assert_equal(self.ts.frame, 2, "loading frame 2")
 
     @dec.slow
@@ -2197,7 +2197,7 @@ class _GromacsReader(TestCase):
     @dec.slow
     def test_reverse_xdrtrj(self):
         frames = [ts.frame for ts in self.trajectory[::-1]]
-        assert_equal(frames, range(10, 0, -1), "slicing xdrtrj [::-1]")
+        assert_equal(frames, list(range(10, 0, -1)), "slicing xdrtrj [::-1]")
 
     @dec.slow
     def test_coordinates(self):
@@ -2207,8 +2207,8 @@ class _GromacsReader(TestCase):
         U = self.universe
         T = U.trajectory
         T.rewind()
-        T.next()
-        T.next()
+        next(T)
+        next(T)
         assert_equal(self.ts.frame, 3, "failed to step to frame 3")
         ca = U.selectAtoms('name CA and resid 122')
         # low precision match (2 decimals in A, 3 in nm) because the above are the trr coords
@@ -2266,7 +2266,7 @@ class _GromacsReader(TestCase):
     def test_Writer(self):
         W = self.universe.trajectory.Writer(self.outfile)
         W.write(self.universe.atoms)
-        self.universe.trajectory.next()
+        next(self.universe.trajectory)
         W.write(self.universe.atoms)
         W.close()
         self.universe.trajectory.rewind()
@@ -2279,7 +2279,7 @@ class _GromacsReader(TestCase):
     def test_EOFraisesIOErrorEIO(self):
         def go_beyond_EOF():
             self.universe.trajectory[-1]
-            self.universe.trajectory.next()
+            next(self.universe.trajectory)
 
         assert_raises(IOError, go_beyond_EOF)
         try:
@@ -2387,7 +2387,7 @@ class _GromacsReader_offsets(TestCase):
         # Saving
         self.trajectory.save_offsets(self.outfile_offsets)
         with open(self.outfile_offsets, 'rb') as f:
-            saved_offsets = cPickle.load(f)
+            saved_offsets = pickle.load(f)
         assert_array_almost_equal(self.trajectory._offsets, saved_offsets['offsets'],
                                   err_msg="error saving frame offsets")
         assert_array_almost_equal(self.ref_offsets, saved_offsets['offsets'],
@@ -2419,7 +2419,7 @@ class _GromacsReader_offsets(TestCase):
         self.trajectory.numframes
 
         with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
+            saved_offsets = pickle.load(f)
 
         # check that stored offsets ctime matches that of trajectory file
         assert_equal(saved_offsets['ctime'], os.path.getctime(self.traj))
@@ -2430,7 +2430,7 @@ class _GromacsReader_offsets(TestCase):
         self.trajectory.numframes
 
         with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
+            saved_offsets = pickle.load(f)
 
         # check that stored offsets size matches that of trajectory file
         assert_equal(saved_offsets['size'], os.path.getsize(self.traj))
@@ -2452,10 +2452,10 @@ class _GromacsReader_offsets(TestCase):
         # check that stored offsets are not loaded when trajectory ctime
         # differs from stored ctime
         with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
+            saved_offsets = pickle.load(f)
         saved_offsets['ctime'] = saved_offsets['ctime'] - 1
         with open(self.trajectory._offset_filename(), 'wb') as f:
-            cPickle.dump(saved_offsets, f)
+            pickle.dump(saved_offsets, f)
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")  # Drop the warnings silently
@@ -2470,10 +2470,10 @@ class _GromacsReader_offsets(TestCase):
         # check that stored offsets are not loaded when trajectory size differs
         # from stored size
         with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
+            saved_offsets = pickle.load(f)
         saved_offsets['size'] += 1
         with open(self.trajectory._offset_filename(), 'wb') as f:
-            cPickle.dump(saved_offsets, f)
+            pickle.dump(saved_offsets, f)
 
         u = mda.Universe(self.top, self.traj)
         assert_equal((u.trajectory._offsets is None), True)
@@ -2486,10 +2486,10 @@ class _GromacsReader_offsets(TestCase):
         # check that stored offsets are not loaded when the offsets themselves
         # appear to be wrong
         with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
+            saved_offsets = pickle.load(f)
         saved_offsets['offsets'] += 1
         with open(self.trajectory._offset_filename(), 'wb') as f:
-            cPickle.dump(saved_offsets, f)
+            pickle.dump(saved_offsets, f)
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")  # Drop the warnings silently
@@ -2505,9 +2505,9 @@ class _GromacsReader_offsets(TestCase):
         os.unlink(self.trajectory._offset_filename())
         for root, dirs, files in os.walk(self.tmpdir, topdown=False):  
             for item in dirs:  
-                os.chmod(os.path.join(root, item), 0444)
+                os.chmod(os.path.join(root, item), 0o444)
             for item in files:
-                os.chmod(os.path.join(root, item), 0444)
+                os.chmod(os.path.join(root, item), 0o444)
 
         u = mda.Universe(self.top, self.traj)
         assert_equal(os.path.exists(self.trajectory._offset_filename()), False)
@@ -2560,8 +2560,8 @@ class _XDRNoConversion(TestCase):
         U = self.universe
         T = U.trajectory
         T.rewind()
-        T.next()
-        T.next()
+        next(T)
+        next(T)
         assert_equal(self.ts.frame, 3, "failed to step to frame 3")
         ca = U.selectAtoms('name CA and resid 122')
         # low precision match because we also look at the trr: only 3 decimals in nm in xtc!
@@ -2613,7 +2613,7 @@ class _GromacsWriter(TestCase):
         uw = mda.Universe(GRO, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame "
                                               "%d (orig) vs %d (written)" % (
@@ -2654,7 +2654,7 @@ class TestTRRWriter(_GromacsWriter):
         uw = mda.Universe(GRO, self.outfile)
 
         # check that the velocities are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
                                       err_msg="velocities mismatch between original and written trajectory at frame "
                                               "%d (orig) vs %d (written)" % (
@@ -2677,7 +2677,7 @@ class TestTRRWriter(_GromacsWriter):
 
         # check that the velocities are identical for each time step, except for the gaps
         # (that we must make sure to raise exceptions on).
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             if ts.frame % 4:
                 assert_array_almost_equal(written_ts.positions, orig_ts.positions, 3,
                                           err_msg="coordinates mismatch between original and written trajectory at "
@@ -2780,7 +2780,7 @@ class _GromacsWriterIssue117(TestCase):
         uw = MDAnalysis.Universe(PRMncdf, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between original and written trajectory at frame "
                                               "%d (orig) vs %d (written)" % (
@@ -2838,7 +2838,7 @@ class TestTRZReader(TestCase, RefTRZ):
 
     def test_next_trz(self):
         self.trz.rewind()
-        self.trz.next()
+        next(self.trz)
         assert_equal(self.ts.frame, 2, "loading frame 2")
 
     def test_rewind_trz(self):
@@ -2943,7 +2943,7 @@ class TestTRZWriter(TestCase, RefTRZ):
 
         uw = mda.Universe(TRZ_psf, self.outfile)
 
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(orig_ts._pos, written_ts._pos, self.prec,
                                       err_msg="Coordinate mismatch between orig and written at frame %d" %
                                               orig_ts.frame)
@@ -2952,7 +2952,7 @@ class TestTRZWriter(TestCase, RefTRZ):
                                               orig_ts.frame)
             assert_array_almost_equal(orig_ts._unitcell, written_ts._unitcell, self.prec,
                                       err_msg="Unitcell mismatch between orig and written at frame %d" % orig_ts.frame)
-            for att in orig_ts.__dict__.keys():
+            for att in list(orig_ts.__dict__.keys()):
                 assert_array_almost_equal(orig_ts.__getattribute__(att), written_ts.__getattribute__(att), self.prec,
                                           err_msg="TS equal failed for %s" % att)
 
@@ -3062,7 +3062,7 @@ class _TestLammpsData_Coords(TestCase):
         assert_equal(self.u.dimensions, self.dimensions)
 
     def test_singleframe(self):
-        assert_raises(IOError, self.u.trajectory.next)
+        assert_raises(IOError, self.u.trajectory.__next__)
 
     def test_seek(self):
         assert_raises(IndexError, self.u.trajectory.__getitem__, 1)
@@ -3202,21 +3202,21 @@ class _DLHistory(object):
         ref = np.array([[-7.595541651, -7.898808509, -7.861763110],
                         [-7.019565641, -7.264933320, -7.045213551],
                         [-6.787470785, -6.912685099, -6.922156843]])
-        for ts, r in itertools.izip(self.u.trajectory, ref):
+        for ts, r in zip(self.u.trajectory, ref):
             assert_allclose(self.u.atoms[0].pos, r)
         
     def test_velocity(self):
         ref = np.array([[1.109901682, -1.500264697, 4.752251711],
                         [-1.398479696, 2.091141311, 1.957430003],
                         [0.2570827995, -0.7146878577, -3.547444215]])
-        for ts, r in itertools.izip(self.u.trajectory, ref):
+        for ts, r in zip(self.u.trajectory, ref):
             assert_allclose(self.u.atoms[0].velocity, r)
 
     def test_force(self):
         ref = np.array([[-2621.386432, 1579.334443, 1041.103241],
                         [-1472.262341, 2450.379615, -8149.916193],
                         [2471.802059, -3828.467296, 3596.679326]])
-        for ts, r in itertools.izip(self.u.trajectory, ref):
+        for ts, r in zip(self.u.trajectory, ref):
             assert_allclose(self.u.atoms[0].force, r)
 
     def test_unitcell(self):
@@ -3229,7 +3229,7 @@ class _DLHistory(object):
         ref3 = np.array([[16.5435673205, -0.0108424742, 0.0014935464],
                          [-0.0108333201, 16.5270298891, 0.0011094612],
                          [0.0014948739, 0.0011058349, 16.5725517831]])
-        for ts, r in itertools.izip(self.u.trajectory, [ref1, ref2, ref3]):
+        for ts, r in zip(self.u.trajectory, [ref1, ref2, ref3]):
             assert_allclose(ts._unitcell, r)
 
 class TestDLPolyHistory(_DLHistory):

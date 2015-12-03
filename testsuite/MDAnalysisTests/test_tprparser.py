@@ -19,7 +19,7 @@ from MDAnalysis.tests.datafiles import TPR, \
     TPR460, TPR461
 
 from numpy.testing import dec
-from test_topology import _TestTopology
+from .test_topology import _TestTopology
 import MDAnalysis.topology.TPRParser
 
 

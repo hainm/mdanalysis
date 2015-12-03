@@ -418,7 +418,7 @@ class _EulerFromMatrix(object):
 
     def test_euler_from_matrix_2(self):
         angles = (4.0*math.pi) * (np.random.random(3) - 0.5)
-        for axes in t._AXES2TUPLE.keys():
+        for axes in list(t._AXES2TUPLE.keys()):
             R0 = t.euler_matrix(axes=axes, *angles)
             R1 = t.euler_matrix(axes=axes, *self.f(R0, axes))
             assert_allclose(R0, R1, err_msg=("{0} failed".format(axes)))

@@ -81,7 +81,7 @@ class TestSelectionsCHARMM(TestCase):
     def test_resnum_range(self):
         sel = self.universe.selectAtoms('resnum 100:105')
         assert_equal(sel.numberOfAtoms(), 89)
-        assert_equal(sel.resids(), range(100, 106))
+        assert_equal(sel.resids(), list(range(100, 106)))
         assert_equal(sel.resnames(), ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
     def test_resname(self):

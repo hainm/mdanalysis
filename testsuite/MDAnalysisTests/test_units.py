@@ -13,7 +13,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import unicode_literals
+
 
 import numpy as np
 from numpy.testing import *
@@ -39,7 +39,7 @@ class TestDefaultUnits(TestCase):
 class TestUnitEncoding(TestCase):
     def testUnicode(self):
         try:
-            assert_equal(units.lengthUnit_factor["\u212b"], 1.0)
+            assert_equal(units.lengthUnit_factor["\\u212b"], 1.0)
         except KeyError:
             raise AssertionError("Unicode symbol for Angtrom not supported")
 
@@ -62,7 +62,7 @@ class TestConstants(object):
         }
 
     def test_constant(self):
-        for name, value in self.constants_reference.iteritems():
+        for name, value in list(self.constants_reference.items()):
             yield self.check_physical_constant, name, value
 
     @staticmethod

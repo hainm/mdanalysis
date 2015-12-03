@@ -13,7 +13,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function
+
 import MDAnalysis
 import MDAnalysis.analysis.distances
 import MDAnalysis.analysis.align
@@ -186,7 +186,7 @@ class TestRMSF(TestCase):
     def test_rmsf_identical_frames(self):
         # write a dummy trajectory of all the same frame
         with MDAnalysis.Writer(self.outfile, self.universe.atoms.numberOfAtoms()) as W:
-            for i in xrange(self.universe.trajectory.numframes):
+            for i in range(self.universe.trajectory.numframes):
                 W.write(self.universe)
 
         self.universe = MDAnalysis.Universe(GRO, self.outfile)
@@ -458,7 +458,7 @@ class TestHoleModule(TestCase):
         # issue 129 isn't fixed, although this depends on the file descriptor
         # open limit for the machine in question
         try:
-            for i in xrange(2):
+            for i in range(2):
                 # will typically get an OSError for too many files being open after
                 # about 2 seconds if issue 129 isn't resolved
                 H.run()

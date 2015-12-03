@@ -772,9 +772,9 @@ class TestAtomGroup(TestCase):
                      err_msg="failed to change segids = {0}".format(u.atoms.segids()))
 
     def test_pickle_raises_NotImplementedError(self):
-        import cPickle
+        import pickle
         ag = self.universe.selectAtoms("bynum 12:42 and name H*")
-        assert_raises(NotImplementedError, cPickle.dumps, ag, protocol=cPickle.HIGHEST_PROTOCOL)
+        assert_raises(NotImplementedError, pickle.dumps, ag, protocol=pickle.HIGHEST_PROTOCOL)
 
     def test_unpickle_raises_NotImplementedError(self):
         ag = self.universe.atoms[:3]
@@ -790,7 +790,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.selectAtoms("resid 1:50 and not resname LYS and (name CA or name CB)")
         sg = ag.split("atom")
         assert_equal(len(sg), len(ag))
-        for g, ref_atom in itertools.izip(sg, ag):
+        for g, ref_atom in zip(sg, ag):
             atom = g[0]
             assert_equal(len(g), 1)
             assert_equal(atom.name, ref_atom.name)
@@ -800,7 +800,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.selectAtoms("resid 1:50 and not resname LYS and (name CA or name CB)")
         sg = ag.split("residue")
         assert_equal(len(sg), len(ag.resids()))
-        for g, ref_resname in itertools.izip(sg, ag.resnames()):
+        for g, ref_resname in zip(sg, ag.resnames()):
             if ref_resname == "GLY":
                 assert_equal(len(g), 1)
             else:
@@ -812,7 +812,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.selectAtoms("resid 1:50 and not resname LYS and (name CA or name CB)")
         sg = ag.split("segment")
         assert_equal(len(sg), len(ag.segids()))
-        for g, ref_segname in itertools.izip(sg, ag.segids()):
+        for g, ref_segname in zip(sg, ag.segids()):
             for atom in g:
                 assert_equal(atom.segid, ref_segname)
 
@@ -1030,7 +1030,7 @@ class TestResidueGroup(TestCase):
         resids = numpy.array(rg.resids()) + 1000
         rg.set_resid(resids)
         # check individual atoms
-        for r, resid in itertools.izip(rg, resids):
+        for r, resid in zip(rg, resids):
             assert_equal([a.resid for a in r.atoms],
                          resid * numpy.ones(r.numberOfAtoms()),
                          err_msg="failed to set_resid residues 10:18 to same resid in residue {0}\n"
@@ -1237,7 +1237,7 @@ class TestAtomGroupVelocities(TestCase):
     @dec.slow
     def test_get_velocities(self):
         v = self.ag.get_velocities()
-        print self.ag.universe.trajectory.ts._vel_source
+        print(self.ag.universe.trajectory.ts._vel_source)
         assert_(numpy.any(numpy.abs(v) > 1e-6), "velocities should be non-zero")
 
     def test_vel_src(self):
@@ -1476,10 +1476,10 @@ class TestUniverse(TestCase):
         assert_equal(u.trajectory.numframes, 2 * ref.trajectory.numframes)
 
     def test_pickle_raises_NotImplementedError(self):
-        import cPickle
+        import pickle
 
         u = MDAnalysis.Universe(PSF, DCD)
-        assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
+        assert_raises(NotImplementedError, pickle.dumps, u, protocol=pickle.HIGHEST_PROTOCOL)
 
     def test_set_dimensions(self):
         u = MDAnalysis.Universe(PSF, DCD)

@@ -166,7 +166,7 @@ class _TestTimestep(TestCase):
         assert_equal(len(self.ts), self.size)
 
     def test_iter(self):
-        for a, b in itertools.izip(self.ts, self.refpos):
+        for a, b in zip(self.ts, self.refpos):
             assert_allclose(a, b)
         assert_equal(len(list(self.ts)), self.size)
 

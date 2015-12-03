@@ -22,8 +22,8 @@ import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.test_coordinates import RefAdKSmall
 from MDAnalysisTests import knownfailure
 
-import StringIO
-import cStringIO
+import io
+import io
 import tempfile
 import os
 
@@ -43,7 +43,7 @@ class TestIsstream(TestCase):
         assert_equal(util.isstream(obj), False)
 
     def test_iterator(self):
-        obj = (i for i in xrange(3))
+        obj = (i for i in range(3))
         assert_equal(util.isstream(obj), False)
 
     def test_file(self):
@@ -52,23 +52,23 @@ class TestIsstream(TestCase):
 
     def test_cStringIO_read(self):
         with open(datafiles.PSF, "r") as f:
-            obj = cStringIO.StringIO(f.read())
+            obj = io.StringIO(f.read())
         assert_equal(util.isstream(obj), True)
         obj.close()
 
     def test_cStringIO_write(self):
-        obj = cStringIO.StringIO()
+        obj = io.StringIO()
         assert_equal(util.isstream(obj), True)
         obj.close()
 
     def test_StringIO_read(self):
         with open(datafiles.PSF, "r") as f:
-            obj = StringIO.StringIO(f)
+            obj = io.StringIO(f)
         assert_equal(util.isstream(obj), True)
         obj.close()
 
     def test_StringIO_write(self):
-        obj = StringIO.StringIO()
+        obj = io.StringIO()
         assert_equal(util.isstream(obj), True)
         obj.close()
 
@@ -85,14 +85,14 @@ class TestNamedStream(TestCase):
         self.numtextlines = len(self.text)
 
     def testClosing(self):
-        obj = cStringIO.StringIO("".join(self.text))
+        obj = io.StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname, close=True)
         assert_equal(ns.closed, False)
         ns.close()
         assert_equal(ns.closed, True)
 
     def testClosingForce(self):
-        obj = cStringIO.StringIO("".join(self.text))
+        obj = io.StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.closed, False)
         ns.close()
@@ -101,7 +101,7 @@ class TestNamedStream(TestCase):
         assert_equal(ns.closed, True)
 
     def testcStringIO_read(self):
-        obj = cStringIO.StringIO("".join(self.text))
+        obj = io.StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.name, self.textname)
         assert_equal(str(ns), self.textname)
@@ -121,7 +121,7 @@ class TestNamedStream(TestCase):
         ns.close(force=True)
 
     def testcStringIO_write(self):
-        obj = cStringIO.StringIO()
+        obj = io.StringIO()
         ns = util.NamedStream(obj, self.textname)
         ns.writelines(self.text)
         assert_equal(ns.name, self.textname)
@@ -169,7 +169,7 @@ class _StreamData(object):
 
     def __init__(self):
         self.buffers = dict(
-            (name, "".join(open(fn).readlines())) for name, fn in self.filenames.iteritems())
+            (name, "".join(open(fn).readlines())) for name, fn in list(self.filenames.items()))
         self.filenames['XYZ_PSF'] = "bogus/path/mini.psf"
         self.buffers['XYZ_PSF'] = """\
 PSF CMAP
@@ -223,10 +223,10 @@ frame 3
 """
 
     def as_StringIO(self, name):
-        return StringIO.StringIO(self.buffers[name])
+        return io.StringIO(self.buffers[name])
 
     def as_cStringIO(self, name):
-        return cStringIO.StringIO(self.buffers[name])
+        return io.StringIO(self.buffers[name])
 
     def as_NamedStream(self, name):
         return util.NamedStream(self.as_cStringIO(name), self.filenames[name])
@@ -303,9 +303,9 @@ class TestStreamIO(TestCase, RefAdKSmall):
         assert_equal(len(u.atoms), 8)
         assert_equal(u.trajectory.numframes, 3)
         assert_equal(u.trajectory.frame, 0)  # weird, something odd with XYZ reader
-        u.trajectory.next()  # (should really only need one next()... )
+        next(u.trajectory)  # (should really only need one next()... )
         assert_equal(u.trajectory.frame, 1)  # !!!! ???
-        u.trajectory.next()  # frame 2
+        next(u.trajectory)  # frame 2
         assert_equal(u.trajectory.frame, 2)
         assert_almost_equal(u.atoms[2].position, numpy.array([0.45600, 18.48700, 16.26500]), 3,
                             err_msg="wrong coordinates for atom CA at frame 2")

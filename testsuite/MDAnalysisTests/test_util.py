@@ -22,7 +22,7 @@ import MDAnalysis.core.util as util
 from MDAnalysis.core.util import cached
 from MDAnalysis.tests.datafiles import PSF
 
-import cStringIO
+import io
 import os.path
 import tempfile
 
@@ -84,7 +84,7 @@ class TestIterable(TestCase):
         assert_equal(util.iterable(()), True)
 
     def test_iterator(self):
-        assert_equal(util.iterable(xrange(3)), True)
+        assert_equal(util.iterable(list(range(3))), True)
 
     def test_arrays(self):
         assert_equal(util.iterable(numpy.array([1, 2, 3])), True)
@@ -95,7 +95,7 @@ class TestIterable(TestCase):
     def test_strings(self):
         """Test that iterable() works on any string (Fixed bug)"""
         assert_equal(util.iterable("byte string"), False)
-        assert_equal(util.iterable(u"unicode string"), False)
+        assert_equal(util.iterable("unicode string"), False)
 
 
 class TestFilename(TestCase):
@@ -126,7 +126,7 @@ class TestFilename(TestCase):
         assert_equal(fn, self.filename2)
 
     def testNamedStream(self):
-        ns = util.NamedStream(cStringIO.StringIO(), self.filename)
+        ns = util.NamedStream(io.StringIO(), self.filename)
         fn = util.filename(ns, ext=self.ext)
         # assert_equal replace by this if loop to avoid segfault on some systems
         if fn != ns:

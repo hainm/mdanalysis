@@ -186,7 +186,7 @@ class _Single(TestCase):
 
 class TestSingleFrameReader(_Single, _TestReader):
     def test_next(self):
-        assert_raises(IOError, self.reader.next)
+        assert_raises(IOError, self.reader.__next__)
 
     # Getitem tests
     # only 0 & -1 should work
