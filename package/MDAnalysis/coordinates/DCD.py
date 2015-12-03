@@ -571,7 +571,7 @@ class DCDReader(base.Reader):
         return DCDWriter(filename, numatoms, **kwargs)
 
 # Add the c functions to their respective classes so they act as class methods
-import _dcdmodule
+from . import _dcdmodule
 import new
 
 DCDReader._read_dcd_header = new.instancemethod(_dcdmodule.__read_dcd_header, None, DCDReader)

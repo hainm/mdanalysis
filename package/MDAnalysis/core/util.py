@@ -342,6 +342,10 @@ def anyopen(datasource, mode='r', reset=True):
         pass  # can't set name (e.g. cStringIO.StringIO)
     return stream
 
+try:
+    file = file
+except NameError:
+    file = open
 
 def _get_stream(filename, openfunction=file, mode='r'):
     """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
@@ -442,7 +446,11 @@ def which(program):
     return None
 
 
-class NamedStream(io.IOBase, str):
+# PY3
+str = bytes
+
+#class NamedStream(io.IOBase, str):
+class NamedStream(io.IOBase):
     """Stream that also provides a (fake) name.
 
     By wrapping a stream *stream* in this class, it can be passed to

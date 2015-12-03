@@ -48,7 +48,10 @@ Example::
 
 import numpy
 
-from .KDTree import KDTree
+try:
+    from .KDTree import KDTree
+except ImportError:
+    from  scipy.spatial import cKDTree as KDTree
 from MDAnalysis.core.AtomGroup import AtomGroup
 
 

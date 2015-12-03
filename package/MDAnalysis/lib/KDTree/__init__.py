@@ -32,4 +32,10 @@ Otfried Schwarzkopf) [deBerg2000].
 """
 __all__ = ['KDTree', 'NeighborSearch']
 
-from .KDTree import KDTree
+try:
+    from .KDTree import KDTree
+except ImportError:
+    try:
+        from scipy.spatial import cKDTree as KDTree
+    except ImportError:
+        raise ImportError('require KDTree')
